@@ -1,20 +1,51 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+//telas
+import TelaHome from './Projeto/Telas/home'
+import TelaPerfil from './Projeto/Telas/perfil'
+import TelaNovoTreino from './Projeto/Telas/treino';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const Stack = createStackNavigator();
+
+function Home(){
+  return(
+    <Stack.Navigator initialRouteName='TelaHome'
+    screenOptions={{
+      StackBarActiveTintColor: 'white',
+      StackBarInactiveTintColor: 'white',
+      StackBarStyle: {
+      padding: 10,
+      backgroundColor: '#222831',
+      borderTopWidth: 0,
+      borderTopColor: "transparent"
+      },
+      cardStyle:{
+        backgroundColor: '#222831',
+        shadowColor: 'transparent'
+      },
+      headerStyle:{
+        backgroundColor:'#222831',
+        shadowColor: '#222831',
+        elevation: 0,
+        borderBottomWidth: 0
+      },
+      headerTintColor: '#eeeeee'
+    }}>
+    <Stack.Screen name='TelaHome' component={TelaHome} options={{title:""}}/>
+    <Stack.Screen name='TelaPerfil' component={TelaPerfil} options={{title:""}}/>
+    <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
+    </Stack.Navigator>
+  )
 }
+//
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+//
+export default function App(){
+
+return(
+  <NavigationContainer >
+      <Home/>
+  </NavigationContainer>
+)
+}
