@@ -66,16 +66,14 @@ export const estilos = StyleSheet.create({
     marginLeft:10,
     marginBottom: 11
   },
-  titulo1:{
-    color:'#EEEEEE',
-    fontWeight:'bold',
-    fontStyle: 'Italic',
-    fontSize:70
+  listaContainer:{
+    overflow: 'hidden',
+    backgroundColor: 'lightgray',
   },
-  titulo2:{
-    color:'#76ABAE',
-    fontWeight:'bold',
-    fontStyle: 'Italic',
-    fontSize:70
+  
+  listItem:{
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
   },
 })
