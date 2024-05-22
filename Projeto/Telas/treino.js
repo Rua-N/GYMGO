@@ -8,15 +8,21 @@ import { getExercicios, migrateDbIfNeeded } from './database1';
 export default function TelaNovoTreino(){
     const [exercicios, setExercicios] = useState([]);
     const db = useSQLiteContext();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredExercicios, setFilteredExercicios] = useState([]);
+
+
     useEffect(() => {
         loadExercicios();
-    
   }, []);
 
+  //Quando aperta no exercicio
   const handleItemPress = (item) => {
     console.log('Item escolhido:', item.nome.toString());
     // Handle item press logic here
   };
+
+  //Método de renderização da lista de exercicios
   const renderItem = ({ item }) => (
     <View>
         <TouchableOpacity onPress={() => handleItemPress(item)}>
@@ -26,18 +32,40 @@ export default function TelaNovoTreino(){
 
 
 );
-    const loadExercicios = async () =>{
-        console.log('carregando exercicios');
-        const results = await getExercicios(db);
-        console.log('exercicios carregados', results);
-        setExercicios(results);
-    };
+
+//Método de filtragem de exercicios
+const handleSearch = (query) => {
+  setSearchQuery(query);
+  if (query === '') {
+    setFilteredExercicios(exercicios);  // Reseta os exercicios se a pesquisa for vazia
+  } 
+  else {
+    const filtered = exercicios.filter(item => 
+      item.nome.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredExercicios(filtered);
+  }
+};
+
+//Carrega os exercicios do banco de dados
+const loadExercicios = async () =>{
+    console.log('carregando exercicios');
+    const results = await getExercicios(db);
+    console.log('exercicios carregados', results);
+    setExercicios(results);
+    setFilteredExercicios(results);  
+};
 
     return(  
         <View style={estilos.container}>
-        <TextInput style={estilos.txtInput} placeholder="Procurar exercício" />
+        <TextInput 
+        style={estilos.txtInput} 
+        placeholder="Procurar exercício"
+        value={searchQuery}
+        onChangeText={handleSearch}
+      />
         <FlatList
-          data={exercicios}
+          data={filteredExercicios}
           renderItem={renderItem}
           keyExtractor={(item) => item.idExercicio.toString()}
         />
