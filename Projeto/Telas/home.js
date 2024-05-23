@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight } from 'react-native';
+import { View, Text, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 
 export default class TelaHome extends Component {
@@ -52,25 +52,42 @@ export default class TelaHome extends Component {
           <Text style={estilos.bTexto}>Iniciar treino vazio</Text>
         </Pressable>
         
-        <TouchableOpacity style={estilos.butao} onPress={this.toggleList1}>
-          <Text style={estilos.bTexto}>Treinos Salvos {isExpanded1 ? '^' : 'v'}</Text>
+        <TouchableOpacity onPress={this.toggleList1}>
+          <Text style={estilos.txtBig}>Treinos Salvos {isExpanded1 ? '^' : 'v'}</Text>
         </TouchableOpacity>
         
         <Animated.View style={[estilos.listaContainer, { height: listHeight1 }]}>
-          <Text style={estilos.listItem}>Item 1 da lista 1</Text>
-          <Text style={estilos.listItem}>Item 2 da lista 1</Text>
-          <Text style={estilos.listItem}>Item 3 da lista 1</Text>
+          <ScrollView>
+          <View estilos={estilos.itens}>
+            <Text style={estilos.bTexto}> Treino A: Peito</Text>
+            <Text style={estilos.bTexto}>Supino Reto {"\n"} Peck Deck...</Text>
+            <Pressable style={estilos.butao}>
+              <Text style={estilos.bTexto}>Iniciar</Text>
+            </Pressable>
+          </View>
+          
+          <View estilos={estilos.itens}>
+            <Text style={estilos.bTexto}> Treino A: Perna</Text>
+            <Text style={estilos.bTexto}>Agachamento {"\n"} Extensora...</Text>
+            <Pressable style={estilos.butao}>
+              <Text style={estilos.bTexto}>Iniciar</Text>
+            </Pressable>
+          </View>
+          </ScrollView>
           {/* Adicione mais itens conforme necessário */}
         </Animated.View>
         
-        <TouchableOpacity style={estilos.butao} onPress={this.toggleList2}>
-          <Text style={estilos.bTexto}>Treinos recentes {isExpanded2 ? '^' : 'v'}</Text>
+        <TouchableOpacity onPress={this.toggleList2}>
+          <Text style={estilos.txtBig}>Treinos Recentes {isExpanded2 ? '^' : 'v'}</Text>
         </TouchableOpacity>
         
         <Animated.View style={[estilos.listaContainer, { height: listHeight2 }]}>
-          <Text style={estilos.listItem}>Item 1 da lista 2</Text>
-          <Text style={estilos.listItem}>Item 2 da lista 2</Text>
-          <Text style={estilos.listItem}>Item 3 da lista 2</Text>
+          <View estilos={estilos.itens}>
+              <Text style={estilos.bTexto}>Pulley{"\n"}Remada{"\n"}Rosca direta{"\n"}Rosca pronada </Text>
+              <Pressable style={estilos.butao}>
+                <Text style={estilos.bTexto}>Salvar</Text>
+              </Pressable>
+            </View>
           {/* Adicione mais itens conforme necessário */}
         </Animated.View>
         

@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+
 //telas
 import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
 import TelaNovoTreino from './Projeto/Telas/treino';
 
 const Stack = createStackNavigator();
-//
-
-//  
+ 
 function Home(){
   return(
     <Stack.Navigator initialRouteName='TelaHome'
+    
     screenOptions={{
       StackBarActiveTintColor: 'white',
       StackBarInactiveTintColor: 'white',
