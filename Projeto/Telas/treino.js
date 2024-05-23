@@ -25,9 +25,13 @@ export default function TelaNovoTreino(){
   //Método de renderização da lista de exercicios
   const renderItem = ({ item }) => (
     <View>
-        <TouchableOpacity onPress={() => handleItemPress(item)}>
-        <Text style={estilos.texto}>{item.idexercicio} {item.nome}</Text>
-        </TouchableOpacity>
+      <View style={estilos.teste}>
+        <View style={estilos.dolado}>
+          <TouchableOpacity onPress={() => handleItemPress(item)}>
+          <Text style={estilos.texto}>{item.idexercicio} {item.nome}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
 
 

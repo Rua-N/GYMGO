@@ -37,7 +37,7 @@ function Home(){
       },
       headerTintColor: '#eeeeee'
     }}>
-    <Stack.Screen name='TelaHome' component={TelaInicial} options={{title:""}}/>
+    <Stack.Screen name='TelaHome' component={TelaHome} options={{title:""}}/>
     <Stack.Screen name='TelaPerfil' component={TelaPerfil} options={{title:""}}/>
     <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
     </Stack.Navigator>
