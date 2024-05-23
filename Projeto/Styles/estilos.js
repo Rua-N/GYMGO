@@ -47,8 +47,7 @@ export const estilos = StyleSheet.create({
   },
   bTexto:{
     color:'#EEEEEE',
-    fontWeight: 600,
-    fontSize: 16
+    //fontSize: '16px'
   },Frame:{
     width:'50%',
     height:'50%',
@@ -74,7 +73,7 @@ export const estilos = StyleSheet.create({
   },
   texto:{
     color:'#EEEEEE',
-    fontSize: 14,
+    //fontSize: 14,
     marginLeft:10,
     marginBottom: 11
   },
@@ -85,7 +84,7 @@ export const estilos = StyleSheet.create({
   txtBig:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    fontSize: '25px'
+    //fontSize: '25px'
   },
   listItem:{
     padding: 10,
@@ -130,8 +129,7 @@ export const estilos = StyleSheet.create({
     borderRadius : 15
   },
   label: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    //fontSize: '18px',
     marginBottom: 8,
   },
   input: {
