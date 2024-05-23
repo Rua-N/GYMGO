@@ -5,7 +5,7 @@ import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import { SQLiteProvider } from 'expo-sqlite';
 import { migrateDbIfNeeded } from './Projeto/Telas/database1';
 //telas
-import TelaInicial from './Projeto/Telas/home'
+import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
 import TelaNovoTreino from './Projeto/Telas/treino';
 

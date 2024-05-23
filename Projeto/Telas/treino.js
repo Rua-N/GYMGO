@@ -25,16 +25,17 @@ export default function TelaNovoTreino(){
   //Método de renderização da lista de exercicios
   const renderItem = ({ item }) => (
     <View>
+      
       <View style={estilos.teste}>
         <View style={estilos.dolado}>
-          <TouchableOpacity onPress={() => handleItemPress(item)}>
+        
           <Text style={estilos.texto}>{item.idexercicio} {item.nome}</Text>
+          <TouchableOpacity style={estilos.botaoAdicionar} onPress={() => handleItemPress(item)}>
+            <Text style={estilos.bTexto}>Adicionar</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View>  
     </View>
-
-
 );
 
 //Método de filtragem de exercicios
