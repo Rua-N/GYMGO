@@ -5,38 +5,45 @@ import { estilos } from '../Styles/estilos';
 import { createTables, insertValues, getValues, dropTable } from './database';
 import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
 import { getExercicios, migrateDbIfNeeded } from './database1';
-export default function TelaNovoTreino(){
+
+
+
+
+export default function TelaNovoTreino({ navigation }){
     const [exercicios, setExercicios] = useState([]);
     const db = useSQLiteContext();
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredExercicios, setFilteredExercicios] = useState([]);
+    const [selectedExercicios, setSelectedExercicios] = useState([]);
+
 
 
     useEffect(() => {
         loadExercicios();
   }, []);
 
-  //Quando aperta no exercicio
+  /*||DESATUALIZADO||
+  Quando aperta no exercicio
   const handleItemPress = (item) => {
     console.log('Item escolhido:', item.nome.toString());
     // Handle item press logic here
+  };*/
+
+  const toggleSelection = (item) => {
+    setSelectedExercicios(prevSelected => {
+      if (prevSelected.includes(item.idExercicio)) {
+        return prevSelected.filter(id => id !== item.idExercicio);
+      } else {
+        return [...prevSelected, item.idExercicio];
+      }
+    });
+  };
+  const handleFinalizeSelection = () => {
+    const selectedItems = exercicios.filter(item => selectedExercicios.includes(item.idExercicio));
+    console.log('Selected exercises:', selectedItems);
+    navigation.navigate('ExerciciosEscolhidos', { selectedExercises: selectedItems });
   };
 
-  //Método de renderização da lista de exercicios
-  const renderItem = ({ item }) => (
-    <View>
-      
-      <View style={estilos.teste}>
-        <View style={estilos.dolado}>
-        
-          <Text style={estilos.texto}>{item.idexercicio} {item.nome}</Text>
-          <TouchableOpacity style={estilos.botaoAdicionar} onPress={() => handleItemPress(item)}>
-            <Text style={estilos.bTexto}>Adicionar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>  
-    </View>
-);
 
 //Método de filtragem de exercicios
 const handleSearch = (query) => {
@@ -60,7 +67,21 @@ const loadExercicios = async () =>{
     setExercicios(results);
     setFilteredExercicios(results);  
 };
-
+  //Método de renderização da lista de exercicios
+  const renderItem = ({ item }) => {
+    const isSelected = selectedExercicios.includes(item.idExercicio);
+    return(
+    <View>
+      <TouchableOpacity onPress={() => toggleSelection(item)}> 
+      <View style={[estilos.unselectedItemContainer, isSelected && estilos.selectedItemContainer]}>
+        <View style={estilos.dolado}>
+          <Text style={estilos.texto}>{item.idexercicio} {item.nome}</Text> 
+        </View>
+      </View>  
+      </TouchableOpacity>
+    </View>
+    );
+  };
     return(  
         <View style={estilos.container}>
         <TextInput 
@@ -74,6 +95,11 @@ const loadExercicios = async () =>{
           renderItem={renderItem}
           keyExtractor={(item) => item.idExercicio.toString()}
         />
+        <TouchableOpacity onPress={handleFinalizeSelection}
+        style={estilos.buttonGeneric}>
+          <Text>Escolher Exercícios</Text>
+        </TouchableOpacity>
       </View>
+      
     );
 }

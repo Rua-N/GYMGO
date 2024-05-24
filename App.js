@@ -8,6 +8,7 @@ import { migrateDbIfNeeded } from './Projeto/Telas/database1';
 import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
 import TelaNovoTreino from './Projeto/Telas/treino';
+import ExerciciosEscolhidos from './Projeto/Telas/exerciciosEscolhidos';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,7 @@ function Home(){
     <Stack.Screen name='TelaHome' component={TelaHome} options={{title:""}}/>
     <Stack.Screen name='TelaPerfil' component={TelaPerfil} options={{title:""}}/>
     <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
+    <Stack.Screen name="ExerciciosEscolhidos" component={ExerciciosEscolhidos} options={{title:""}} />
     </Stack.Navigator>
   )
 }

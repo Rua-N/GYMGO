@@ -104,11 +104,6 @@ export const estilos = StyleSheet.create({
     height:60
 
   },
-  teste:{
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'left',
-  },
   dolado:{
     display: 'flex',
     flexDirection: 'row',
@@ -144,4 +139,19 @@ export const estilos = StyleSheet.create({
     width: 150,
     marginBottom: 16,
   },
+  selectedItemContainer: {
+    backgroundColor: '#cce5ff',
+    borderColor: '#007bff',
+    borderWidth: 2,
+  },
+  unselectedItemContainer:{
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'left',
+  },
+  buttonGeneric:{
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+  }
 })
