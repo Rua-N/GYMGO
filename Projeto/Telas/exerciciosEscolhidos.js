@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -51,28 +51,28 @@ export default function ExerciciosEscolhidos({ navigation }) {
   };
 
   const renderExercise = ({ item }) => (
-    <View style={styles.exerciseContainer}>
-      <Text style={styles.exerciseTitle}>{item.nome}</Text>
+    <View style={estilos.exerciseContainer}>
+      <Text style={estilos.exerciseTitle}>{item.nome}</Text>
       {item.series && item.series.map((series, index) => (
-        <View key={index} style={styles.seriesContainer}>
-          <Text style={styles.seriesText}>Série {index + 1}</Text>
+        <View key={index} style={estilos.seriesContainer}>
+          <Text style={estilos.seriesText}>Série {index + 1}</Text>
           <TextInput
-            style={styles.seriesInput}
+            style={estilos.seriesInput}
             placeholder="KG"
             value={series.kg}
             onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
           />
           <TextInput
-            style={styles.seriesInput}
+            style={estilos.seriesInput}
             placeholder="Repetições"
             value={series.repetitions}
             onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
           />
         </View>
       ))}
-      <TouchableOpacity onPress={() => addSeries(item.idExercicio)}>
-        <Text style={styles.addSeriesButton}>Adicionar Série</Text>
-      </TouchableOpacity>
+      <Pressable onPress={() => addSeries(item.idExercicio)}>
+        <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
+      </Pressable>
     </View>
   );
 
@@ -95,84 +95,32 @@ export default function ExerciciosEscolhidos({ navigation }) {
 
   return (
     <View style={estilos.container}>
+      {/*header*/}
+      <View style={estilos.header}>  
+        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+          <View style={estilos.botaoVoltar}>
+            <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
+          </View>
+        </Pressable>	
+      </View>  
+      {/*header*/}
+      <View style={estilos.body}>
       <FlatList
         data={localExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.idExercicio.toString()}
       />
-      <TouchableOpacity 
-        style={styles.finalizeButton}
-        onPress={handleFinalizeTraining}
-      >
-        <Text style={styles.finalizeButtonText}>Finalizar Treino</Text>
-      </TouchableOpacity>
-      <TouchableOpacity 
-        style={styles.addExerciseButton}
-        onPress={() => navigation.navigate('TelaNovoTreino')}
-      >
-        <Text style={styles.addExerciseButtonText}>Adicionar Exercício</Text>
-      </TouchableOpacity>
+      <View style={estilos.footer}> 
+        <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
+          <Text style={estilos.bTexto}>Finalizar Treino</Text>
+        </Pressable>
+        
+        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
+          <Text style={estilos.bTexto}>Adicionar Exercício</Text>
+        </Pressable>
+      </View>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  exerciseContainer: {
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 10,
-    backgroundColor: '#333',
-  },
-  exerciseTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  seriesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  seriesText: {
-    color: '#fff',
-  },
-  seriesInput: {
-    flex: 1,
-    borderColor: '#555',
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-    marginHorizontal: 5,
-    color: '#fff',
-  },
-  addSeriesButton: {
-    color: '#007bff',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  addExerciseButton: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-  },
-  addExerciseButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  finalizeButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-  },
-  finalizeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});

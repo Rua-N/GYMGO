@@ -1,5 +1,5 @@
 import { Component, useState, useEffect,  useContext} from 'react';
-import { View, Text, TextInput,FlatList ,TouchableOpacity } from 'react-native';
+import { View, Text, TextInput,FlatList ,TouchableOpacity, Image,Pressable } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { estilos } from '../Styles/estilos';
 import { createTables, insertValues, getValues, dropTable } from './database';
@@ -99,7 +99,17 @@ const loadExercicios = async () =>{
     );
   };
     return(  
-        <View style={estilos.container}>
+    <View style={estilos.container}>
+        {/*header*/}
+      <View style={estilos.header}>  
+        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+          <View style={estilos.botaoVoltar}>
+            <Image style={estilos.setaVoltar} source={require('../Styles/imgs/voltar.png')}/>
+          </View>
+        </Pressable>	
+      </View>  
+      {/*header*/}
+      <View style={estilos.body}>
         <TextInput 
         style={estilos.txtInput} 
         placeholder="Procurar exercício"
@@ -112,10 +122,10 @@ const loadExercicios = async () =>{
           keyExtractor={(item) => item.idExercicio.toString()}
         />
         <TouchableOpacity onPress={handleFinalizeSelection}
-        style={estilos.buttonGeneric}>
-          <Text>Escolher Exercícios</Text>
+        style={estilos.butao}>
+          <Text style={estilos.bTexto}>Escolher Exercícios</Text>
         </TouchableOpacity>
       </View>
-      
+      </View>     
     );
 }

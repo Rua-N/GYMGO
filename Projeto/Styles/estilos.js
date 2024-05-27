@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native'
+import { Header } from 'react-native-elements'
 
 export const estilos = StyleSheet.create({
   container:{
@@ -6,10 +7,45 @@ export const estilos = StyleSheet.create({
     flexDirection: 'column',
     display: 'flex',
     position: 'relative',
-    padding: 35,
+    padding: 0,
     marginTop: 0,
     backgroundColor:'#222831',
     //borderColor:'red',
+    //borderWidth: 2
+  },logo:{
+    flex:2,
+    width: undefined,
+    height: undefined,
+    resizeMode: 'contain'
+  },
+  setaVoltar:{
+    width:28,
+    height:14.34,
+    transform:[{rotate:'270deg'}],
+    resizeMode: 'cotain'
+  },
+  botaoFechar:{
+    width:28,
+    height:28,
+    tintColor:'#eeeeee'
+  },
+  botaoVoltar:{
+    alignSelf: 'left',
+    width:48,
+    height:48,
+    paddingTop:10,
+    //borderColor:'yellow',
+    //borderWidth: 2    
+  },
+  header:{
+    flex:1,
+    padding:10,
+    marginTop:27,
+    //borderColor:'aliceblue',
+    //borderWidth: 2
+  },body:{
+    flex:5,
+    //borderColor:'green',
     //borderWidth: 2
   },
   footer:{
@@ -22,6 +58,7 @@ export const estilos = StyleSheet.create({
     alignSelf:'center',
     width:'100%',
     justifyContent:'space-evenly',
+    gap: '50sp',
     //borderColor:'blue',
     //borderWidth: 2
   },
@@ -38,16 +75,18 @@ export const estilos = StyleSheet.create({
     backgroundColor:'#76ABAE',
     alignItems:'center',
     justifyContent:'center',
+    alignSelf:'center',
     borderRadius: 20,
     minHeight:'70px',
     marginBottom: 15,
     marginTop: 15,
     padding: 8,
-    width:'100%'
+    width:'90%'
   },
   bTexto:{
     color:'#EEEEEE',
-    //fontSize: '16px'
+    fontWeight: 'bold',
+    fontSize: '16sp'
   },Frame:{
     width:'50%',
     height:'50%',
@@ -73,7 +112,7 @@ export const estilos = StyleSheet.create({
   },
   texto:{
     color:'#EEEEEE',
-    //fontSize: 14,
+    fontSize: '14sp',
     marginLeft:10,
     marginBottom: 11
   },
@@ -84,7 +123,7 @@ export const estilos = StyleSheet.create({
   txtBig:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    //fontSize: '25px'
+    fontSize: '25sp'
   },
   listItem:{
     padding: 10,
@@ -139,19 +178,75 @@ export const estilos = StyleSheet.create({
     width: 150,
     marginBottom: 16,
   },
+
   selectedItemContainer: {
-    backgroundColor: '#cce5ff',
-    borderColor: '#007bff',
+    backgroundColor: '#0E111580',
+    borderColor: '#76ABAE',
     borderWidth: 2,
+    borderRadius:'20px'
   },
   unselectedItemContainer:{
+    backgroundColor: '#0E111580',
+    borderRadius:'20px',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'left',
+    marginTop:10,
+    marginHorizontal:10
   },
   buttonGeneric:{
     backgroundColor: '#007bff',
     padding: 10,
     borderRadius: 5,
+  },
+  //Tela de treinos escolhidos
+  exerciseContainer: {
+    marginBottom: 20,
+    padding: 15,
+    borderRadius: 10,
+    backgroundColor: '#0E111550',
+  },
+  exerciseTitle: {
+    fontSize: '18sp',
+    fontWeight: 'bold',
+    color: '#eeeeee',
+  },
+  seriesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  seriesText: {
+    color: '#eeeeee',
+  },
+  seriesInput: {
+    flex: 1,
+    borderColor: '#555',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    marginHorizontal: 5,
+    color: '#fff',
+  },
+  addSeriesButton: {
+    color: '#76ABAE',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: '16sp'
+  },
+  addExerciseButton: {
+    bottom: 20,
+    left: 20,
+    backgroundColor: '#76ABAE',
+    padding: 10,
+    borderRadius: 5,
+    
+  },
+
+  finalizeButton: {
+    backgroundColor: '#76ABAE',
+    padding: 10,
+    borderRadius: 20,
   }
 })

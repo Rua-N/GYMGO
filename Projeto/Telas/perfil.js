@@ -57,11 +57,25 @@ export default class TelaPerfil extends Component {
   render() {
     return (
       <View style={estilos.container}>
-        <View style={estilos.Frame}>
+        {/*header*/}
+      <View style={estilos.header}>  
+        <Pressable onPress={() => this.props.navigation.navigate('TelaHome')}>    
+          <View style={estilos.botaoVoltar}>
+            <Image style={estilos.setaVoltar} source={require('../Styles/imgs/voltar.png')}/>
+          </View>
+        </Pressable>	
+      </View>  
+      {/*header*/}
+        <View style={estilos.body}>
           <EditPesoPadrao />
         </View>
         {/*Footer vvv*/}
         <View style={estilos.footer}>
+        <View>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHistorico')}>
+              <Image source={require('../Styles/imgs/historico.png')} style={estilos.footerImgs} />
+            </TouchableHighlight>
+          </View>
           <View>
             <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHome')}>
               <Image source={require('../Styles/imgs/halter.png')} style={estilos.footerImgs} />
