@@ -10,6 +10,7 @@ import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
 import TelaNovoTreino from './Projeto/Telas/treino';
 import ExerciciosEscolhidos from './Projeto/Telas/exerciciosEscolhidos';
+import TelaTodosTreinos from './Projeto/Telas/historicoTreinos';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ function Home(){
     <Stack.Screen name='TelaPerfil' component={TelaPerfil} options={{title:""}}/>
     <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
     <Stack.Screen name="ExerciciosEscolhidos" component={ExerciciosEscolhidos} options={{title:""}} />
+    <Stack.Screen name="TelaTodosTreinos" component={TelaTodosTreinos} options={{title:""}} />
     </Stack.Navigator>
   )
 }

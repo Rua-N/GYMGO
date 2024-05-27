@@ -7,10 +7,23 @@ interface Exercicio {
   nome: string;
   linkPreview: string;
 }
+interface Treino {
+  idSerie: number;
+  idTreino:number;
+  idTreinoTemplate: number ;
+  nome : string;
+  dataTreino : string;
+}
+interface Serie{
+  idTreino:number;
+  idSerie: number;
+  reps: number;
+  carga: number;
+}
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     console.log(FileSystem.documentDirectory);
-    const DATABASE_VERSION = 3;
+    const DATABASE_VERSION = 4;
 
     let { user_version: currentDbVersion } = await db.getFirstAsync<{ user_version: number }>(
       'PRAGMA user_version'
@@ -119,6 +132,27 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       await db.runAsync('INSERT INTO exercicio (idgrupomuscular, nome) VALUES (?, ?)', 5, 'Cadeira Flexora');
       currentDbVersion = 3;
      }
+     if (currentDbVersion === 3) {
+      console.log('Banco de Dados sendo atualizado para v4');
+      const result = await db.execAsync(`
+      PRAGMA journal_mode = 'wal';
+
+        CREATE TABLE serie(
+        idSerie INTEGER PRIMARY KEY NOT NULL,
+        idExercicio INTEGER,
+        carga NUMBER,
+        reps INTEGER,
+        idTreino INTEGER,
+          
+        FOREIGN KEY (idExercicio)
+        REFERENCES exercicio(idExercicio),
+          
+        FOREIGN KEY (idTreino)
+        REFERENCES treino(idTreino)
+        );
+  `);
+      currentDbVersion = 4;
+     }
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   }
   
@@ -149,8 +183,18 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   export const getExercicios = async (db: SQLiteDatabase) => {
     return await db.getAllAsync<Exercicio>('SELECT * FROM exercicio');
   };
+  
+  
+  export const getTreinos = async (db: SQLiteDatabase) => {
+    const result = await db.getAllAsync<Treino>(`
+    SELECT * FROM TREINO
+    `);
+
+    return result;
+  };
+
   export const getSeries = async (db: SQLiteDatabase) => {
-    return await db.getFirstAsync('SELECT * FROM serie');  
+    return await db.getAllAsync<Serie>('SELECT idtreino, idserie, reps, carga FROM serie');
   };
   
 

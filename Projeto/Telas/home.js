@@ -108,7 +108,7 @@ export default class TelaHome extends Component {
             </TouchableHighlight>
           </View>
           <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaPerfil')}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaTodosTreinos')}>
               <Image source={require('../Styles/imgs/perfil.png')} style={estilos.footerImgs} />
             </TouchableHighlight>
           </View>

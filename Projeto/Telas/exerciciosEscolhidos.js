@@ -9,6 +9,14 @@ export default function ExerciciosEscolhidos({ navigation }) {
   const db = useSQLiteContext();
   const { exercises, setExercises } = useContext(ExerciseContext);
   const [localExercises, setLocalExercises] = useState(exercises);
+  const today = new Date();
+  function getDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    return `${date}-${month}-${year}`;
+  }
 
   useEffect(() => {
     setLocalExercises(exercises);
@@ -72,7 +80,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
     console.log('Treino Finalizado:');
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
-      saveTreinoVazio(db, '15-05-2024');
+      saveTreinoVazio(db, getDate());
       if (exercise.series) {
         exercise.series.forEach((series, index) => {
           saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
