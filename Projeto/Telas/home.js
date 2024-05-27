@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
+import { ExerciseContext } from './ExerciseContext';
 
 export default class TelaHome extends Component {
+
+  static contextType = ExerciseContext; 
   constructor(props) {
     super(props);
     this.state = {
@@ -46,9 +49,15 @@ export default class TelaHome extends Component {
       outputRange: [0, 200] // ajuste conforme necessário
     });
 
+    iniciarTreinoVazio = () => {
+      const { clearExercises } = this.context;
+      clearExercises();
+      this.props.navigation.navigate('TelaNovoTreino');
+    };
+
     return (
       <View style={estilos.container}>
-        <Pressable style={estilos.butao} onPress={() => this.props.navigation.navigate('TelaNovoTreino')}>
+        <Pressable style={estilos.butao} onPress={iniciarTreinoVazio}>
           <Text style={estilos.bTexto}>Iniciar treino vazio</Text>
         </Pressable>
         

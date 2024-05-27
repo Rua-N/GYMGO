@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { estilos } from '../Styles/estilos';
+import { ExerciseContext } from './ExerciseContext';
+import { useSQLiteContext } from 'expo-sqlite';
+import { saveTreinoVazio, saveSerie, getSeries } from './database1';
 
-export default function ExerciciosEscolhidos({ route, navigation }) {
-  const { selectedExercises } = route.params;
-  const [exercises, setExercises] = useState(selectedExercises);
+export default function ExerciciosEscolhidos({ navigation }) {
+  const db = useSQLiteContext();
+  const { exercises, setExercises } = useContext(ExerciseContext);
+  const [localExercises, setLocalExercises] = useState(exercises);
+
+  useEffect(() => {
+    setLocalExercises(exercises);
+  }, [exercises]);
 
   const addSeries = (exerciseId) => {
-    const updatedExercises = exercises.map(exercise => {
+    const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
         return { ...exercise, series: [...(exercise.series || []), { kg: '', repetitions: '' }] };
       }
       return exercise;
     });
+    setLocalExercises(updatedExercises);
     setExercises(updatedExercises);
   };
 
   const updateSeries = (exerciseId, seriesIndex, field, value) => {
-    const updatedExercises = exercises.map(exercise => {
+    const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
         const updatedSeries = exercise.series.map((series, index) => {
           if (index === seriesIndex) {
@@ -29,6 +38,7 @@ export default function ExerciciosEscolhidos({ route, navigation }) {
       }
       return exercise;
     });
+    setLocalExercises(updatedExercises);
     setExercises(updatedExercises);
   };
 
@@ -60,13 +70,17 @@ export default function ExerciciosEscolhidos({ route, navigation }) {
 
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
-    exercises.forEach(exercise => {
+    localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
+      saveTreinoVazio(db, '15-05-2024');
       if (exercise.series) {
         exercise.series.forEach((series, index) => {
-          console.log(`Série ${index + 1}: Peso = ${series.kg}, Repetições = ${series.repetitions}`);
+          saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
+          console.log('salvando: ' + exercise.idExercicio, series.kg, series.repetitions)
+          //console.log(`Série ${index + 1}: Peso = ${series.kg}, Repetições = ${series.repetitions}`);
         });
       }
+      console.log(getSeries(db))
     });
     // Aqui você pode inserir a lógica para salvar os dados no banco de dados
   };
@@ -74,7 +88,7 @@ export default function ExerciciosEscolhidos({ route, navigation }) {
   return (
     <View style={estilos.container}>
       <FlatList
-        data={exercises}
+        data={localExercises}
         renderItem={renderExercise}
         keyExtractor={(item) => item.idExercicio.toString()}
       />
@@ -82,12 +96,11 @@ export default function ExerciciosEscolhidos({ route, navigation }) {
         style={styles.finalizeButton}
         onPress={handleFinalizeTraining}
       >
-    
         <Text style={styles.finalizeButtonText}>Finalizar Treino</Text>
       </TouchableOpacity>
       <TouchableOpacity 
         style={styles.addExerciseButton}
-        onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}
+        onPress={() => navigation.navigate('TelaNovoTreino')}
       >
         <Text style={styles.addExerciseButtonText}>Adicionar Exercício</Text>
       </TouchableOpacity>
@@ -138,7 +151,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-
+  addExerciseButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
   finalizeButton: {
     position: 'absolute',
     bottom: 20,

@@ -1,11 +1,11 @@
-import { Component, useState, useEffect,  } from 'react';
+import { Component, useState, useEffect,  useContext} from 'react';
 import { View, Text, TextInput,FlatList ,TouchableOpacity } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { estilos } from '../Styles/estilos';
 import { createTables, insertValues, getValues, dropTable } from './database';
 import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
 import { getExercicios, migrateDbIfNeeded } from './database1';
-
+import { ExerciseContext } from './ExerciseContext';
 
 
 
@@ -14,6 +14,7 @@ export default function TelaNovoTreino({ navigation }){
     const db = useSQLiteContext();
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredExercicios, setFilteredExercicios] = useState([]);
+    const { exercises, setExercises } = useContext(ExerciseContext);
     const [selectedExercicios, setSelectedExercicios] = useState([]);
 
 
@@ -32,6 +33,7 @@ export default function TelaNovoTreino({ navigation }){
   const toggleSelection = (item) => {
     setSelectedExercicios(prevSelected => {
       if (prevSelected.includes(item.idExercicio)) {
+        removeExercise(item.idExercicio);
         return prevSelected.filter(id => id !== item.idExercicio);
       } else {
         return [...prevSelected, item.idExercicio];
@@ -40,10 +42,24 @@ export default function TelaNovoTreino({ navigation }){
   };
   const handleFinalizeSelection = () => {
     const selectedItems = exercicios.filter(item => selectedExercicios.includes(item.idExercicio));
-    console.log('Selected exercises:', selectedItems);
-    navigation.navigate('ExerciciosEscolhidos', { selectedExercises: selectedItems });
+    
+    // Adiciona apenas novos exercícios, sem duplicar os já existentes
+    const updatedExercises = [...exercises];
+    selectedItems.forEach(selectedItem => {
+      if (!updatedExercises.some(exercise => exercise.idExercicio === selectedItem.idExercicio)) {
+        updatedExercises.push(selectedItem);
+      }
+    });
+
+    setExercises(updatedExercises);
+    navigation.navigate('ExerciciosEscolhidos');
   };
 
+
+  const removeExercise = (exerciseId) => {
+    const updatedExercises = exercises.filter(exercise => exercise.idExercicio !== exerciseId);
+    setExercises(updatedExercises);
+  };
 
 //Método de filtragem de exercicios
 const handleSearch = (query) => {

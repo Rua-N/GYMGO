@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import { SQLiteProvider } from 'expo-sqlite';
 import { migrateDbIfNeeded } from './Projeto/Telas/database1';
+import { ExerciseProvider } from './Projeto/Telas/ExerciseContext';
 //telas
 import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
@@ -50,11 +51,13 @@ function Home(){
 //
 export default  function App(){
 return(
+  <ExerciseProvider>
   <SQLiteProvider databaseName='treinoapp.db' onInit={migrateDbIfNeeded}>
       <NavigationContainer >
         <Home/>
       </NavigationContainer>
 </SQLiteProvider>
+</ExerciseProvider>
 )
 }
 
