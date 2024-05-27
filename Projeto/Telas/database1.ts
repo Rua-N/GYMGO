@@ -20,10 +20,14 @@ interface Serie{
   reps: number;
   carga: number;
 }
+interface TreinoTemplate{
+  idTreinoTemplate: number;
+  nome: string;
+}
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     console.log(FileSystem.documentDirectory);
-    const DATABASE_VERSION = 4;
+    const DATABASE_VERSION = 5;
 
     let { user_version: currentDbVersion } = await db.getFirstAsync<{ user_version: number }>(
       'PRAGMA user_version'
@@ -153,6 +157,32 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   `);
       currentDbVersion = 4;
      }
+     if (currentDbVersion === 4) {
+      console.log('Banco de Dados sendo atualizado para v5');
+      const result = await db.execAsync(`
+      CREATE TABLE treinoTemplate(
+        idTreinoTemplate INTEGER PRIMARY KEY NOT NULL,
+        nome TEXT  
+    );
+    
+    CREATE TABLE serieTemplate(
+        idSerieTemplate INTEGER PRIMARY KEY NOT NULL,
+        
+        idExercicio INTEGER,
+        
+        idTreinoTemplate INTEGER,
+        
+        qntSeries INTEGER,
+          
+        FOREIGN KEY (idTreinoTemplate)
+        REFERENCES treinoTemplate(idTreinoTemplate),
+
+        FOREIGN KEY (idExercicio)
+        REFERENCES exercicio(idExercicio)
+        );
+  `);
+      currentDbVersion = 5;
+     }
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   }
   
@@ -169,7 +199,19 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     datatreino: string, ) =>{
     await db.runAsync('INSERT INTO treino(dataTreino) VALUES (?)', datatreino);
   }
-  
+
+  export const saveTreinoTemplate = async (db: SQLiteDatabase, 
+    nome: string, ) =>{
+    await db.runAsync('INSERT INTO treinotemplate(nome) VALUES (?)', nome);
+  }
+
+  export const saveSerieTemplate = async (db: SQLiteDatabase, 
+    idExercicio: number, 
+    qntSeries: number,
+  ) =>{
+    const idTreinoTemplate:number = await db.getFirstAsync('SELECT idtreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC');  
+    await db.runAsync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idTreinoTemplate, qntSeries);
+  }
   
   export const saveSerie = async (db: SQLiteDatabase, 
     idExercicio: number, 
@@ -192,7 +234,21 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
     return result;
   };
+  export const getTreinosTemplate = async (db: SQLiteDatabase) => {
+    const result = await db.getAllAsync<TreinoTemplate>(`
+    SELECT * FROM TreinoTemplate
+    `);
 
+    return result;
+  };
+
+  export const getSeriesTemplate = async (db: SQLiteDatabase) => {
+    const result = await db.getAllAsync<TreinoTemplate>(`
+    SELECT * FROM TreinoTemplate
+    `);
+
+    return result;
+  };
   export const getSeries = async (db: SQLiteDatabase) => {
     return await db.getAllAsync<Serie>('SELECT idtreino, idserie, reps, carga FROM serie');
   };

@@ -1,44 +1,47 @@
-import React, { Component } from 'react';
-import { View, Text, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
+import React, { Component, useEffect, useState } from 'react';
+import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
+import { getTreinosTemplate } from './database1';
+import { useSQLiteContext } from 'expo-sqlite';
+const TelaHome = () => {
+  const [treinos, setTreinosTemplate] = useState([]);
+  db = useSQLiteContext();
 
-export default class TelaHome extends Component {
+    useEffect(() => {
+      loadTreinosTemplate();
+    }, []);
 
-  static contextType = ExerciseContext; 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isExpanded1: false,
-      isExpanded2: false,
-      animation1: new Animated.Value(0),
+    const loadTreinosTemplate = async () =>{
+      console.log('carregando treinos');
+      try {
+          const results = await getTreinosTemplate(db);
+          console.log('treinos carregados', results);
+          setTreinosTemplate(results);
+        } catch (error) {
+          console.error('Erro ao carregar treinosTemplate', error);
+        }
       };
-  }
-
-  toggleList1 = () => {
-    const { isExpanded1, animation1 } = this.state;
-    Animated.timing(animation1, {
-      toValue: isExpanded1 ? 0 : 1,
-      duration: 300,
-      useNativeDriver: false
-    }).start();
-    this.setState({ isExpanded1: !isExpanded1 });
-  };
-
-  render() {
-    const { isExpanded1, animation1, isExpanded2, animation2 } = this.state;
+   
     
-    const listHeight1 = animation1.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 200] // ajuste conforme necessário
-    });
-
+    
     iniciarTreinoVazio = () => {
       const { clearExercises } = this.context;
       clearExercises();
       this.props.navigation.navigate('TelaNovoTreino');
     };
+    criarTreinoTemplate = () => {
+      const { clearExercises } = this.context;
+      clearExercises();
+      this.props.navigation.navigate('TelaNovoTemplate');
+    };
 
+    const renderItem = ({ item }) => (
+      <View>
+        <Text>ID: {item.idTreinoTemplate}</Text>
+        <Text>Nome: {item.nome}</Text>
+      </View>
+    );
     return (
       
       <View style={estilos.container}>
@@ -53,27 +56,25 @@ export default class TelaHome extends Component {
         </Pressable>
         
         <TouchableOpacity onPress={this.toggleList1}>
-          <Text style={estilos.txtBig}>Treinos Salvos {isExpanded1 ? '^' : 'v'}</Text>
+          <Text>Treinos Salvos</Text>
         </TouchableOpacity>
         
-        <Animated.View style={[estilos.listaContainer, { height: listHeight1 }]}>
-          <ScrollView>
+        <Animated.View style={[estilos.listaContainer]}>
+          {/* Botão Criar novo Template */}
+                <View>
+                  <TouchableOpacity  
+                onPress={criarTreinoTemplate}
+              >
+                <Text>+</Text>
+              </TouchableOpacity>
+                </View>
           <View estilos={estilos.itens}>
-            <Text style={estilos.bTexto}> Treino A: Peito</Text>
-            <Text style={estilos.texto}>Supino Reto {"\n"} Peck Deck...</Text>
-            <Pressable style={estilos.butao}>
-              <Text style={estilos.bTexto}>Iniciar</Text>
-            </Pressable>
+          <FlatList
+            data={treinos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.idTreinoTemplate.toString()}
+          />
           </View>
-          
-          <View estilos={estilos.itens}>
-            <Text style={estilos.bTexto}> Treino A: Perna</Text>
-            <Text style={estilos.bTexto}>Agachamento {"\n"} Extensora...</Text>
-            <Pressable style={estilos.butao}>
-              <Text style={estilos.bTexto}>Iniciar</Text>
-            </Pressable>
-          </View>
-          </ScrollView>
           {/* Adicione mais itens conforme necessário */}
         </Animated.View>
         </View>      
@@ -99,4 +100,4 @@ export default class TelaHome extends Component {
       </View>
     );
   }
-}
+  export default TelaHome;

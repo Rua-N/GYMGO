@@ -58,7 +58,7 @@ export const estilos = StyleSheet.create({
     alignSelf:'center',
     width:'100%',
     justifyContent:'space-evenly',
-    gap: '50sp',
+    //gap: '50sp',
     //borderColor:'blue',
     //borderWidth: 2
   },
@@ -86,7 +86,7 @@ export const estilos = StyleSheet.create({
   bTexto:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    fontSize: '16sp'
+    //fontSize: '16sp'
   },Frame:{
     width:'50%',
     height:'50%',
@@ -112,7 +112,7 @@ export const estilos = StyleSheet.create({
   },
   texto:{
     color:'#EEEEEE',
-    fontSize: '14sp',
+    //fontSize: '14sp',
     marginLeft:10,
     marginBottom: 11
   },
@@ -123,7 +123,7 @@ export const estilos = StyleSheet.create({
   txtBig:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    fontSize: '25sp'
+    //fontSize: '25sp'
   },
   listItem:{
     padding: 10,
@@ -183,11 +183,11 @@ export const estilos = StyleSheet.create({
     backgroundColor: '#0E111580',
     borderColor: '#76ABAE',
     borderWidth: 2,
-    borderRadius:'20px'
+    borderRadius: 20
   },
   unselectedItemContainer:{
     backgroundColor: '#0E111580',
-    borderRadius:'20px',
+    borderRadius:20 ,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'left',
@@ -207,7 +207,7 @@ export const estilos = StyleSheet.create({
     backgroundColor: '#0E111550',
   },
   exerciseTitle: {
-    fontSize: '18sp',
+    //fontSize: '18sp',
     fontWeight: 'bold',
     color: '#eeeeee',
   },
@@ -233,7 +233,7 @@ export const estilos = StyleSheet.create({
     color: '#76ABAE',
     textAlign: 'center',
     marginTop: 10,
-    fontSize: '16sp'
+    //fontSize: '16sp'
   },
   addExerciseButton: {
     bottom: 20,

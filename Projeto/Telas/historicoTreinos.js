@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+
 import { View, Text, FlatList, StyleSheet} from 'react-native';
 import { estilos } from '../Styles/estilos';
-import { getExercicios, getSeries, getTreinos } from './database1';
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+
 function TelaTodosTreinos() {
   const [treinos, setTreinos] = useState([]);
   db = useSQLiteContext();

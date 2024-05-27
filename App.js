@@ -12,7 +12,8 @@ import TelaNovoTreino from './Projeto/Telas/treino';
 import ExerciciosEscolhidos from './Projeto/Telas/exerciciosEscolhidos';
 import TelaTodosTreinos from './Projeto/Telas/historicoTreinos';
 import TelaHistorico from './Projeto/Telas/historico';
-
+import TelaNovoTemplate from './Projeto/Telas/addNovoTemplate';
+import ExerciciosEscolhidosTemplate from './Projeto/Telas/exerciciosEscolhidosTemplate';
 const Stack = createStackNavigator();
 
 
@@ -47,6 +48,8 @@ function Home(){
     <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
     <Stack.Screen name="ExerciciosEscolhidos" component={ExerciciosEscolhidos} options={{title:""}} />
     <Stack.Screen name="TelaTodosTreinos" component={TelaTodosTreinos} options={{title:""}} />
+    <Stack.Screen name="TelaNovoTemplate" component={TelaNovoTemplate} options={{title:""}} />
+    <Stack.Screen name="ExerciciosEscolhidosTemplate" component={ExerciciosEscolhidosTemplate} options={{title:""}} />
     </Stack.Navigator>
   )
 }
