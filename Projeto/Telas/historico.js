@@ -1,8 +1,91 @@
-import { Component} from "react";
-import {View,TouchableHighlight,Image} from 'react-native'
+import { Component, useEffect, useState, } from "react";
+import {View, Text, FlatList, TouchableHighlight,Image, StyleSheet} from 'react-native'
 import {estilos} from '../Styles/estilos'
+import { getSeries, getTreinos, getTreinosTemplate } from './database1';
+import { useSQLiteContext } from 'expo-sqlite';
 
-export default class TelaHistorico extends Component{
+function TelaHistorico({ navigation }) {
+  const [treinos, setTreinos] = useState([]);
+  db = useSQLiteContext();
+
+  useEffect(() => {
+    loadTreinos();
+  }, []);
+
+  const loadTreinos = async () =>{
+    console.log('carregando treinos');
+    try {
+        const results = await getTreinos(db);
+        console.log('treinos carregados', results);
+        setTreinos(results);
+      } catch (error) {
+        console.error('Erro ao carregar treinos', error);
+      }
+    };
+
+    const loadSeries = async () =>{
+        console.log('carregando series');
+        const results = await getSeries(db);
+        console.log('series carregadas', results);
+        setTreinos(results);
+    };
+
+    const renderItem = ({ item }) => (
+        <View style={styles.item}>
+          <Text style={estilos.bTexto}>ID: {item.idTreino}</Text>
+          <Text style={estilos.bTexto}>Data: {item.dataTreino}</Text>
+        </View>
+      );
+    
+      return (
+        <View style={styles.container}>
+          <FlatList
+            data={treinos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.idTreino.toString()}
+          />
+          {/*Footer vvv*/}
+        <View style={estilos.footer}>
+        <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHistorico')}>
+              <Image source={require('../Styles/imgs/historico.png')} style={estilos.footerImgs} />
+            </TouchableHighlight>
+          </View>
+          <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHome')}>
+              <Image source={require('../Styles/imgs/halter.png')} style={estilos.footerImgsAtivado} />
+            </TouchableHighlight>
+          </View>
+          <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaPerfil')}>
+              <Image source={require('../Styles/imgs/perfil.png')} style={estilos.footerImgs} />
+            </TouchableHighlight>
+          </View>
+        </View>
+        {/*Footer ^^^*/}
+        </View>
+      );
+    }
+    
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        padding: 10,
+      },
+      item: {
+        padding: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+      },
+      title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
+    });
+    
+    export default TelaHistorico;
+
+/*export default class TelaHistorico extends Component{
   render(){  
     return(
     //Footer v v v 
@@ -24,4 +107,4 @@ export default class TelaHistorico extends Component{
           </View>
         </View>
     //Footer ^^^
-  );}}
+  );}}*/

@@ -7,7 +7,7 @@ export const estilos = StyleSheet.create({
     flexDirection: 'column',
     display: 'flex',
     position: 'relative',
-    padding: 0,
+    padding: 10,
     marginTop: 0,
     backgroundColor:'#222831',
     //borderColor:'red',
@@ -37,14 +37,22 @@ export const estilos = StyleSheet.create({
     //borderColor:'yellow',
     //borderWidth: 2    
   },
+  botaoAdd:{
+    width:28,
+    height:28,
+    transform:[{rotate:'45deg'}],
+    tintColor:'#eeeeee',
+    margin : 5
+  },
   header:{
     flex:1,
     padding:10,
     marginTop:27,
     //borderColor:'aliceblue',
     //borderWidth: 2
-  },body:{
-    flex:5,
+  },
+  body:{
+    flex: 15,
     //borderColor:'green',
     //borderWidth: 2
   },
@@ -58,7 +66,7 @@ export const estilos = StyleSheet.create({
     alignSelf:'center',
     width:'100%',
     justifyContent:'space-evenly',
-    gap: '50sp',
+    //gap: '50sp',
     //borderColor:'blue',
     //borderWidth: 2
   },
@@ -86,7 +94,7 @@ export const estilos = StyleSheet.create({
   bTexto:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    fontSize: '16sp'
+    //fontSize: '16sp'
   },Frame:{
     width:'50%',
     height:'50%',
@@ -112,7 +120,7 @@ export const estilos = StyleSheet.create({
   },
   texto:{
     color:'#EEEEEE',
-    fontSize: '14sp',
+    //fontSize: '14sp',
     marginLeft:10,
     marginBottom: 11
   },
@@ -123,7 +131,7 @@ export const estilos = StyleSheet.create({
   txtBig:{
     color:'#EEEEEE',
     fontWeight: 'bold',
-    fontSize: '25sp'
+    //fontSize: '25sp'
   },
   listItem:{
     padding: 10,
@@ -183,11 +191,11 @@ export const estilos = StyleSheet.create({
     backgroundColor: '#0E111580',
     borderColor: '#76ABAE',
     borderWidth: 2,
-    borderRadius:'20px'
+    borderRadius: 20
   },
   unselectedItemContainer:{
     backgroundColor: '#0E111580',
-    borderRadius:'20px',
+    borderRadius:20 ,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'left',
@@ -207,7 +215,7 @@ export const estilos = StyleSheet.create({
     backgroundColor: '#0E111550',
   },
   exerciseTitle: {
-    fontSize: '18sp',
+    //fontSize: '18sp',
     fontWeight: 'bold',
     color: '#eeeeee',
   },
@@ -233,7 +241,7 @@ export const estilos = StyleSheet.create({
     color: '#76ABAE',
     textAlign: 'center',
     marginTop: 10,
-    fontSize: '16sp'
+    //fontSize: '16sp'
   },
   addExerciseButton: {
     bottom: 20,
@@ -243,7 +251,6 @@ export const estilos = StyleSheet.create({
     borderRadius: 5,
     
   },
-
   finalizeButton: {
     backgroundColor: '#76ABAE',
     padding: 10,

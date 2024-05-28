@@ -4,13 +4,16 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
 import { SQLiteProvider } from 'expo-sqlite';
 import { migrateDbIfNeeded } from './Projeto/Telas/database1';
+import { ExerciseProvider } from './Projeto/Telas/ExerciseContext';
 //telas
 import TelaHome from './Projeto/Telas/home'
 import TelaPerfil from './Projeto/Telas/perfil'
 import TelaNovoTreino from './Projeto/Telas/treino';
 import ExerciciosEscolhidos from './Projeto/Telas/exerciciosEscolhidos';
+import TelaTodosTreinos from './Projeto/Telas/historicoTreinos';
 import TelaHistorico from './Projeto/Telas/historico';
-
+import TelaNovoTemplate from './Projeto/Telas/addNovoTemplate';
+import ExerciciosEscolhidosTemplate from './Projeto/Telas/exerciciosEscolhidosTemplate';
 const Stack = createStackNavigator();
 
 
@@ -44,6 +47,9 @@ function Home(){
     <Stack.Screen name='TelaHistorico' component={TelaHistorico} options={{title:""}}/>
     <Stack.Screen name='TelaNovoTreino' component={TelaNovoTreino} options={{title:""}}/>
     <Stack.Screen name="ExerciciosEscolhidos" component={ExerciciosEscolhidos} options={{title:""}} />
+    <Stack.Screen name="TelaTodosTreinos" component={TelaTodosTreinos} options={{title:""}} />
+    <Stack.Screen name="TelaNovoTemplate" component={TelaNovoTemplate} options={{title:""}} />
+    <Stack.Screen name="ExerciciosEscolhidosTemplate" component={ExerciciosEscolhidosTemplate} options={{title:""}} />
     </Stack.Navigator>
   )
 }
@@ -52,11 +58,13 @@ function Home(){
 //
 export default  function App(){
 return(
+  <ExerciseProvider>
   <SQLiteProvider databaseName='treinoapp.db' onInit={migrateDbIfNeeded}>
       <NavigationContainer >
         <Home/>
       </NavigationContainer>
 </SQLiteProvider>
+</ExerciseProvider>
 )
 }
 

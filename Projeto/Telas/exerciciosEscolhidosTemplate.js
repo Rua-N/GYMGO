@@ -3,13 +3,15 @@ import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native'
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
-import { saveTreinoVazio, saveSerie, getSeries } from './database1';
+import { saveTreinoVazio, saveSerie, getSeries, saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate } from './database1';
 
-export default function ExerciciosEscolhidos({ navigation }) {
+export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const db = useSQLiteContext();
   const { exercises, setExercises } = useContext(ExerciseContext);
   const [localExercises, setLocalExercises] = useState(exercises);
   const today = new Date();
+  const [nomeTreino, setNomeTreino] = useState('');
+
   function getDate() {
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -17,8 +19,12 @@ export default function ExerciciosEscolhidos({ navigation }) {
     const date = today.getDate();
     return `${date}-${month}-${year}`;
   }
+  const handleNomeChange = (text) => {
+    setNomeTreino(text); // Atualiza o estado com o valor do TextInput
+  };
 
   useEffect(() => {
+    console.log(getTreinosTemplate(db));
     setLocalExercises(exercises);
   }, [exercises]);
 
@@ -78,17 +84,16 @@ export default function ExerciciosEscolhidos({ navigation }) {
 
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
+    console.log(nomeTreino);
+    saveTreinoTemplate(db, nomeTreino);
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
-      saveTreinoVazio(db, getDate());
+      
       if (exercise.series) {
-        exercise.series.forEach((series, index) => {
-          saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
-          console.log('salvando: ' + exercise.idExercicio, series.kg, series.repetitions)
-          //console.log(`Série ${index + 1}: Peso = ${series.kg}, Repetições = ${series.repetitions}`);
-        });
+        const totalSeries = exercise.series.length; 
+        saveSerieTemplate(db, exercise.idExercicio, totalSeries);
+        console.log('Número total de séries:', totalSeries);
       }
-      console.log(getSeries(db))
     });
     navigation.navigate('TelaHome');
     // Aqui você pode inserir a lógica para salvar os dados no banco de dados
@@ -96,8 +101,15 @@ export default function ExerciciosEscolhidos({ navigation }) {
 
   return (
     <View style={estilos.container}>
+      
       {/*header*/}
       <View style={estilos.header}>  
+      <TextInput
+        
+        value={nomeTreino} // Vincula o valor do TextInput ao estado
+        onChangeText={handleNomeChange} // Atualiza o estado quando o texto muda
+        placeholder="Nome do treino"
+      />
         <Pressable onPress={() => navigation.navigate('TelaHome')}>    
           <View style={estilos.botaoVoltar}>
             <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
@@ -113,10 +125,10 @@ export default function ExerciciosEscolhidos({ navigation }) {
       />
       <View style={estilos.footer}> 
         <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
-          <Text style={estilos.bTexto}>Finalizar Treino</Text>
+          <Text style={estilos.bTexto}>Salvar Treino</Text>
         </Pressable>
         
-        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
+        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTemplate', { selectedExercises: exercises })}>
           <Text style={estilos.bTexto}>Adicionar Exercício</Text>
         </Pressable>
       </View>

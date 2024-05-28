@@ -1,35 +1,59 @@
-import React, { Component } from 'react';
-import { View, Text, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
+import React, { Component, useEffect, useState, useContext } from 'react';
+import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
+import { ExerciseContext } from './ExerciseContext';
+import { deleteTreinosTemplate, getTreinosTemplate } from './database1';
+import { useSQLiteContext } from 'expo-sqlite';
+import { useFocusEffect } from '@react-navigation/native';
 
-export default class TelaHome extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isExpanded1: false,
-      isExpanded2: false,
-      animation1: new Animated.Value(0),
+export default function TelaNovoTreino({ navigation }){
+
+  const { exercises, setExercises, clearExercises } = useContext(ExerciseContext);
+  const [treinos, setTreinosTemplate] = useState([]);
+  db = useSQLiteContext();
+
+    useEffect(() => {
+      loadTreinosTemplate();
+    }, []);
+
+
+    useFocusEffect(
+      React.useCallback(() => {
+        loadTreinosTemplate();
+        console.log('Tela ganhou foco');
+        // Perform any other actions when the screen is focused
+      }, [])
+    );
+  
+
+    const loadTreinosTemplate = async () =>{
+      console.log('carregando treinos');
+      try {
+          const results = await getTreinosTemplate(db);
+          console.log('treinos carregados', results);
+          setTreinosTemplate(results);
+        } catch (error) {
+          console.error('Erro ao carregar treinosTemplate', error);
+        }
       };
-  }
-
-  toggleList1 = () => {
-    const { isExpanded1, animation1 } = this.state;
-    Animated.timing(animation1, {
-      toValue: isExpanded1 ? 0 : 1,
-      duration: 300,
-      useNativeDriver: false
-    }).start();
-    this.setState({ isExpanded1: !isExpanded1 });
-  };
-
-  render() {
-    const { isExpanded1, animation1, isExpanded2, animation2 } = this.state;
+   
     
-    const listHeight1 = animation1.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 200] // ajuste conforme necessário
-    });
+    iniciarTreinoVazio = () => {
+      clearExercises();
+      navigation.navigate('TelaNovoTreino');
+    };
+    criarTreinoTemplate = () => {
+      clearExercises();
+      navigation.navigate('TelaNovoTemplate');
+    };
 
+    const renderItem = ({ item }) => (
+      <View style={estilos.unselectedItemContainer}>
+        <Text style={estilos.bTexto}>ID: {item.idTreinoTemplate}</Text>
+        <Text style={estilos.texto}>Nome: {item.nome}</Text>
+        <Text style={estilos.texto}>EXERCICIOS...</Text>
+      </View>
+    );
     return (
       
       <View style={estilos.container}>
@@ -39,49 +63,47 @@ export default class TelaHome extends Component {
       </View>  
       {/*header*/}
        <View style={estilos.body}> 
-        <Pressable style={estilos.butao} onPress={() => this.props.navigation.navigate('TelaNovoTreino')}>
+        <Pressable style={estilos.butao} onPress={iniciarTreinoVazio}>
           <Text style={estilos.bTexto}>Iniciar treino vazio</Text>
         </Pressable>
         
         <TouchableOpacity onPress={this.toggleList1}>
-          <Text style={estilos.txtBig}>Treinos Salvos {isExpanded1 ? '^' : 'v'}</Text>
+          <Text style={estilos.bTexto}>Treinos Salvos</Text>
         </TouchableOpacity>
         
-        <Animated.View style={[estilos.listaContainer, { height: listHeight1 }]}>
-          <ScrollView>
+        <Animated.View style={[estilos.listaContainer]}>
+          {/* Botão Criar novo Template */}
+                <View>
+                  <TouchableOpacity  
+                onPress={criarTreinoTemplate}
+              >
+                <Image source={require('../Styles/imgs/X.png')} style={estilos.botaoAdd} />
+              </TouchableOpacity>
+                </View>
           <View estilos={estilos.itens}>
-            <Text style={estilos.bTexto}> Treino A: Peito</Text>
-            <Text style={estilos.texto}>Supino Reto {"\n"} Peck Deck...</Text>
-            <Pressable style={estilos.butao}>
-              <Text style={estilos.bTexto}>Iniciar</Text>
-            </Pressable>
+          <FlatList
+            data={treinos}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.idTreinoTemplate.toString()}
+          />
           </View>
-          
-          <View estilos={estilos.itens}>
-            <Text style={estilos.bTexto}> Treino A: Perna</Text>
-            <Text style={estilos.bTexto}>Agachamento {"\n"} Extensora...</Text>
-            <Pressable style={estilos.butao}>
-              <Text style={estilos.bTexto}>Iniciar</Text>
-            </Pressable>
-          </View>
-          </ScrollView>
           {/* Adicione mais itens conforme necessário */}
         </Animated.View>
         </View>      
         {/*Footer vvv*/}
         <View style={estilos.footer}>
         <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHistorico')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHistorico')}>
               <Image source={require('../Styles/imgs/historico.png')} style={estilos.footerImgs} />
             </TouchableHighlight>
           </View>
           <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHome')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHome')}>
               <Image source={require('../Styles/imgs/halter.png')} style={estilos.footerImgsAtivado} />
             </TouchableHighlight>
           </View>
           <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaPerfil')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaPerfil')}>
               <Image source={require('../Styles/imgs/perfil.png')} style={estilos.footerImgs} />
             </TouchableHighlight>
           </View>
@@ -90,4 +112,3 @@ export default class TelaHome extends Component {
       </View>
     );
   }
-}

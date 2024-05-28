@@ -9,7 +9,7 @@ import { ExerciseContext } from './ExerciseContext';
 
 
 
-export default function TelaNovoTreino({ navigation }){
+export default function TelaNovoTemplate({ navigation }){
     const [exercicios, setExercicios] = useState([]);
     const db = useSQLiteContext();
     const [searchQuery, setSearchQuery] = useState('');
@@ -22,13 +22,6 @@ export default function TelaNovoTreino({ navigation }){
     useEffect(() => {
         loadExercicios();
   }, []);
-
-  /*||DESATUALIZADO||
-  Quando aperta no exercicio
-  const handleItemPress = (item) => {
-    console.log('Item escolhido:', item.nome.toString());
-    // Handle item press logic here
-  };*/
 
   const toggleSelection = (item) => {
     setSelectedExercicios(prevSelected => {
@@ -52,7 +45,7 @@ export default function TelaNovoTreino({ navigation }){
     });
 
     setExercises(updatedExercises);
-    navigation.navigate('ExerciciosEscolhidos');
+    navigation.navigate('ExerciciosEscolhidosTemplate');
   };
 
 
