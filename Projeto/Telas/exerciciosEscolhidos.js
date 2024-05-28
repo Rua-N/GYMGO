@@ -90,6 +90,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
       }
       console.log(getSeries(db))
     });
+    navigation.navigate('TelaHome');
     // Aqui você pode inserir a lógica para salvar os dados no banco de dados
   };
 

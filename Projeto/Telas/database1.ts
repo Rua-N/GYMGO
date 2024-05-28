@@ -81,20 +81,6 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
         FOREIGN KEY (idTreinoTemplate)
         REFERENCES treinoTemplate(idTreinoTemplate)
         );
-        
-        CREATE TABLE serie(
-        idSerie INTEGER PRIMARY KEY NOT NULL,
-        idExercicio INTEGER,
-        carga NUMBER,
-        reps INTEGER,
-        idTreino INTEGER,
-          
-        FOREIGN KEY (idExercicio)
-        REFERENCES exercicio(idExercicio),
-          
-        FOREIGN KEY (idTreino)
-        REFERENCES treino(idTreino)
-        );
   `);
       console.log(result);
         await db.runAsync('INSERT INTO grupoMuscular (nomegrupomuscular) VALUES (?)','Bíceps');
@@ -139,7 +125,6 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
      if (currentDbVersion === 3) {
       console.log('Banco de Dados sendo atualizado para v4');
       const result = await db.execAsync(`
-      PRAGMA journal_mode = 'wal';
 
         CREATE TABLE serie(
         idSerie INTEGER PRIMARY KEY NOT NULL,
@@ -229,7 +214,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   
   export const getTreinos = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<Treino>(`
-    SELECT * FROM TREINO
+    SELECT * FROM TREINO ORDER BY idTreino DESC
     `);
 
     return result;
@@ -240,6 +225,14 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     `);
 
     return result;
+  };
+
+  export const deleteTreinosTemplate = async (db: SQLiteDatabase) => {
+    await db.runAsync(`
+    DELETE FROM TreinoTemplate;
+    `,);
+    console.log('Treino apagado id: ');
+
   };
 
   export const getSeriesTemplate = async (db: SQLiteDatabase) => {

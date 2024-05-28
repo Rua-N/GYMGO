@@ -4,7 +4,7 @@ import {estilos} from '../Styles/estilos'
 import { getSeries, getTreinos, getTreinosTemplate } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 
-function TelaHistorico() {
+function TelaHistorico({ navigation }) {
   const [treinos, setTreinos] = useState([]);
   db = useSQLiteContext();
 
@@ -32,8 +32,8 @@ function TelaHistorico() {
 
     const renderItem = ({ item }) => (
         <View style={styles.item}>
-          <Text style={styles.title}>ID: {item.idTreino}</Text>
-          <Text>Data: {item.dataTreino}</Text>
+          <Text style={estilos.bTexto}>ID: {item.idTreino}</Text>
+          <Text style={estilos.bTexto}>Data: {item.dataTreino}</Text>
         </View>
       );
     
@@ -44,6 +44,25 @@ function TelaHistorico() {
             renderItem={renderItem}
             keyExtractor={(item) => item.idTreino.toString()}
           />
+          {/*Footer vvv*/}
+        <View style={estilos.footer}>
+        <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHistorico')}>
+              <Image source={require('../Styles/imgs/historico.png')} style={estilos.footerImgs} />
+            </TouchableHighlight>
+          </View>
+          <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHome')}>
+              <Image source={require('../Styles/imgs/halter.png')} style={estilos.footerImgsAtivado} />
+            </TouchableHighlight>
+          </View>
+          <View>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaPerfil')}>
+              <Image source={require('../Styles/imgs/perfil.png')} style={estilos.footerImgs} />
+            </TouchableHighlight>
+          </View>
+        </View>
+        {/*Footer ^^^*/}
         </View>
       );
     }

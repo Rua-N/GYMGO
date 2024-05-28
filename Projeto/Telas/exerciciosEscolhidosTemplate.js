@@ -85,15 +85,17 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
     console.log(nomeTreino);
+    saveTreinoTemplate(db, nomeTreino);
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
-      saveTreinoTemplate(db, nomeTreino);
+      
       if (exercise.series) {
         const totalSeries = exercise.series.length; 
         saveSerieTemplate(db, exercise.idExercicio, totalSeries);
         console.log('Número total de séries:', totalSeries);
       }
     });
+    navigation.navigate('TelaHome');
     // Aqui você pode inserir a lógica para salvar os dados no banco de dados
   };
 

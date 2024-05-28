@@ -1,16 +1,30 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState, useContext } from 'react';
 import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
-import { getTreinosTemplate } from './database1';
+import { deleteTreinosTemplate, getTreinosTemplate } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
-const TelaHome = () => {
+import { useFocusEffect } from '@react-navigation/native';
+
+export default function TelaNovoTreino({ navigation }){
+
+  const { exercises, setExercises, clearExercises } = useContext(ExerciseContext);
   const [treinos, setTreinosTemplate] = useState([]);
   db = useSQLiteContext();
 
     useEffect(() => {
       loadTreinosTemplate();
     }, []);
+
+
+    useFocusEffect(
+      React.useCallback(() => {
+        loadTreinosTemplate();
+        console.log('Tela ganhou foco');
+        // Perform any other actions when the screen is focused
+      }, [])
+    );
+  
 
     const loadTreinosTemplate = async () =>{
       console.log('carregando treinos');
@@ -24,22 +38,20 @@ const TelaHome = () => {
       };
    
     
-    
     iniciarTreinoVazio = () => {
-      const { clearExercises } = this.context;
       clearExercises();
-      this.props.navigation.navigate('TelaNovoTreino');
+      navigation.navigate('TelaNovoTreino');
     };
     criarTreinoTemplate = () => {
-      const { clearExercises } = this.context;
       clearExercises();
-      this.props.navigation.navigate('TelaNovoTemplate');
+      navigation.navigate('TelaNovoTemplate');
     };
 
     const renderItem = ({ item }) => (
-      <View>
-        <Text>ID: {item.idTreinoTemplate}</Text>
-        <Text>Nome: {item.nome}</Text>
+      <View style={estilos.unselectedItemContainer}>
+        <Text style={estilos.bTexto}>ID: {item.idTreinoTemplate}</Text>
+        <Text style={estilos.texto}>Nome: {item.nome}</Text>
+        <Text style={estilos.texto}>EXERCICIOS...</Text>
       </View>
     );
     return (
@@ -56,7 +68,7 @@ const TelaHome = () => {
         </Pressable>
         
         <TouchableOpacity onPress={this.toggleList1}>
-          <Text>Treinos Salvos</Text>
+          <Text style={estilos.bTexto}>Treinos Salvos</Text>
         </TouchableOpacity>
         
         <Animated.View style={[estilos.listaContainer]}>
@@ -65,7 +77,7 @@ const TelaHome = () => {
                   <TouchableOpacity  
                 onPress={criarTreinoTemplate}
               >
-                <Text>+</Text>
+                <Image source={require('../Styles/imgs/X.png')} style={estilos.botaoAdd} />
               </TouchableOpacity>
                 </View>
           <View estilos={estilos.itens}>
@@ -81,17 +93,17 @@ const TelaHome = () => {
         {/*Footer vvv*/}
         <View style={estilos.footer}>
         <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHistorico')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHistorico')}>
               <Image source={require('../Styles/imgs/historico.png')} style={estilos.footerImgs} />
             </TouchableHighlight>
           </View>
           <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaHome')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaHome')}>
               <Image source={require('../Styles/imgs/halter.png')} style={estilos.footerImgsAtivado} />
             </TouchableHighlight>
           </View>
           <View>
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('TelaPerfil')}>
+            <TouchableHighlight onPress={() => navigation.navigate('TelaPerfil')}>
               <Image source={require('../Styles/imgs/perfil.png')} style={estilos.footerImgs} />
             </TouchableHighlight>
           </View>
@@ -100,4 +112,3 @@ const TelaHome = () => {
       </View>
     );
   }
-  export default TelaHome;

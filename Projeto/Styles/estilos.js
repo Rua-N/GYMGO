@@ -7,7 +7,7 @@ export const estilos = StyleSheet.create({
     flexDirection: 'column',
     display: 'flex',
     position: 'relative',
-    padding: 0,
+    padding: 10,
     marginTop: 0,
     backgroundColor:'#222831',
     //borderColor:'red',
@@ -37,14 +37,22 @@ export const estilos = StyleSheet.create({
     //borderColor:'yellow',
     //borderWidth: 2    
   },
+  botaoAdd:{
+    width:28,
+    height:28,
+    transform:[{rotate:'45deg'}],
+    tintColor:'#eeeeee',
+    margin : 5
+  },
   header:{
     flex:1,
     padding:10,
     marginTop:27,
     //borderColor:'aliceblue',
     //borderWidth: 2
-  },body:{
-    flex:5,
+  },
+  body:{
+    flex: 15,
     //borderColor:'green',
     //borderWidth: 2
   },
@@ -243,7 +251,6 @@ export const estilos = StyleSheet.create({
     borderRadius: 5,
     
   },
-
   finalizeButton: {
     backgroundColor: '#76ABAE',
     padding: 10,
