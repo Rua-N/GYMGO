@@ -88,9 +88,10 @@ export default function ExerciciosEscolhidos({ navigation }) {
 
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
+    saveTreinoVazio(db, getDate());
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
-      saveTreinoVazio(db, getDate());
+      
       if (exercise.series) {
         exercise.series.forEach((series, index) => {
           saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);

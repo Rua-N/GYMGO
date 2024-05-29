@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState, useContext } from 'react';
 import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
-import { deleteSeriesTemplate, deleteTreinosTemplate, getAllExercicios, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinosTemplateFull } from './database1';
+import { deleteSeriesTemplate, deleteTreinos, deleteTreinosTemplate, getAllExercicios, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinosTemplateFull } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -50,7 +50,10 @@ export default function TelaNovoTreino({ navigation }){
             exercicios: []
           };
         }
-        treinosComExercicios[item.idTreinoTemplate].exercicios.push(item.exercicionome);
+        treinosComExercicios[item.idTreinoTemplate].exercicios.push({
+          nome: item.exercicionome,
+          qntSeries: item.qntSeries
+        });
       });
 
       // Converter o objeto em uma matriz para fins de renderização
@@ -83,7 +86,10 @@ export default function TelaNovoTreino({ navigation }){
         <FlatList
           data={item.exercicios}
           renderItem={({ item: exercicio }) => (
-            <Text style={estilos.texto}>{exercicio}</Text>
+            <View>
+            <Text style={estilos.texto}>{exercicio.qntSeries} x </Text>
+            <Text style={estilos.texto}>{exercicio.nome}</Text>
+          </View>
           )}
           keyExtractor={(exercicio, index) => index.toString()}
         />

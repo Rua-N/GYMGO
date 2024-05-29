@@ -11,7 +11,8 @@ interface Treino {
   idSerie: number;
   idTreino:number;
   idTreinoTemplate: number ;
-  nome : string;
+  treinonome : string;
+  exercicionome : string;
   dataTreino : string;
 }
 interface Serie{
@@ -183,9 +184,9 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     await db.runAsync('INSERT INTO exercicio (idgrupomuscular, nome, linkpreview) VALUES (?, ?, ?)', idGrupoMuscular, nome, linkPreview);
   }
 
-  export const saveTreinoVazio = async (db: SQLiteDatabase, 
+  export const saveTreinoVazio =(db: SQLiteDatabase, 
     datatreino: string, ) =>{
-    await db.runAsync('INSERT INTO treino(dataTreino) VALUES (?)', datatreino);
+    db.runSync('INSERT INTO treino(dataTreino) VALUES (?)', datatreino);
   }
 
   export const saveTreinoTemplate = async (db: SQLiteDatabase, 
@@ -198,17 +199,17 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     qntSeries: number,
     idtreinotemplate: number,
   ) =>{
-    const idtreino = await db.getAllAsync<{idTreinoTemplate:number}>('SELECT idTreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC LIMIT 1');
-    await db.runAsync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idtreino[0].idTreinoTemplate, qntSeries);
+    const idtreino = await db.getAllSync<{idTreinoTemplate:number}>('SELECT idTreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC LIMIT 1');
+    await db.runSync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idtreino[0].idTreinoTemplate, qntSeries);
   }
   
-  export const saveSerie = async (db: SQLiteDatabase, 
+  export const saveSerie = (db: SQLiteDatabase, 
     idExercicio: number, 
     carga: number, 
     reps: number) =>{
-
-    console.log('nao funciona ainda :)')
-    //await db.runAsync('INSERT INTO serie(idExercicio, carga, reps, idTreino) VALUES (?, ?, ?, ?)', idExercicio, carga, reps, );
+      const idtreino = db.getAllSync<{idTreino:number}>('SELECT idTreino FROM treino ORDER BY idTreino DESC LIMIT 1');
+      console.log(idtreino);
+      db.runSync('INSERT INTO serie(idExercicio, carga, reps, idTreino) VALUES (?, ?, ?, ?)', idExercicio, carga, reps, idtreino[0].idTreino);
   }
 
 
@@ -219,7 +220,10 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   
   export const getTreinos = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<Treino>(`
-    SELECT * FROM TREINO ORDER BY idTreino DESC
+    SELECT treino.dataTreino as dataTreino, treino.idtreino as idTreino, treino.nome as treinonome, exercicio.nome as exercicionome, serie.idserie FROM TREINO 
+join serie on treino.idtreino = serie.idtreino 
+join exercicio on exercicio.idexercicio = serie.idexercicio
+ ORDER BY idTreino DESC
     `);
 
     return result;
@@ -242,7 +246,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
 
   export const getTreinosTemplate = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<TreinoTemplate>(`
-    select exercicio.nome as exercicionome, treinotemplate.nome as treinonome, treinotemplate.idtreinotemplate from treinotemplate 
+    select serietemplate.qntSeries, exercicio.nome as exercicionome, treinotemplate.nome as treinonome, treinotemplate.idtreinotemplate from treinotemplate 
     join serietemplate on serietemplate.idtreinotemplate = treinotemplate.idtreinotemplate
     join exercicio on exercicio.idexercicio = serietemplate.idexercicio;
     `);
@@ -265,6 +269,18 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     console.log('treinos apagado id: ');
 
   };
+
+  export const deleteTreinos = async (db: SQLiteDatabase) => {
+    await db.runAsync(`
+    DELETE FROM treino;
+    `,);
+    await db.runAsync(`
+    DELETE FROM serie;
+    `,);
+    console.log('treinos apagado id: ');
+
+  };
+
   export const deleteSeriesTemplate = async (db: SQLiteDatabase) => {
     await db.runAsync(`
     DELETE FROM SerieTemplate;
