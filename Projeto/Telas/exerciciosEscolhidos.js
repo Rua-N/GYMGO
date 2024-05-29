@@ -8,8 +8,22 @@ import { saveTreinoVazio, saveSerie, getSeries } from './database1';
 export default function ExerciciosEscolhidos({ navigation }) {
   const db = useSQLiteContext();
   const { exercises, setExercises } = useContext(ExerciseContext);
-  const [localExercises, setLocalExercises] = useState(exercises);
+  const [localExercises, setLocalExercises] = useState([]);
+
+  useEffect(() => {
+    // Inicializar localExercises com as séries vazias baseadas em qntSeries
+    const initializeExercises = exercises.map(exercise => {
+      if (exercise.qntSeries) {
+        const series = Array.from({ length: exercise.qntSeries }, () => ({ kg: '', repetitions: '' }));
+        return { ...exercise, series };
+      }
+      return exercise;
+    });
+    setLocalExercises(initializeExercises);
+  }, [exercises]); // <-- Linha modificada/adicionada
+
   const today = new Date();
+  
   function getDate() {
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -17,10 +31,6 @@ export default function ExerciciosEscolhidos({ navigation }) {
     const date = today.getDate();
     return `${date}-${month}-${year}`;
   }
-
-  useEffect(() => {
-    setLocalExercises(exercises);
-  }, [exercises]);
 
   const addSeries = (exerciseId) => {
     const updatedExercises = localExercises.map(exercise => {
@@ -30,7 +40,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
       return exercise;
     });
     setLocalExercises(updatedExercises);
-    setExercises(updatedExercises);
+    setExercises(updatedExercises); // <-- Linha modificada/adicionada
   };
 
   const updateSeries = (exerciseId, seriesIndex, field, value) => {
@@ -47,7 +57,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
       return exercise;
     });
     setLocalExercises(updatedExercises);
-    setExercises(updatedExercises);
+    setExercises(updatedExercises); // <-- Linha modificada/adicionada
   };
 
   const renderExercise = ({ item }) => (
@@ -60,13 +70,13 @@ export default function ExerciciosEscolhidos({ navigation }) {
             style={estilos.seriesInput}
             placeholder="KG"
             value={series.kg}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)} // <-- Linha modificada/adicionada
           />
           <TextInput
             style={estilos.seriesInput}
             placeholder="Repetições"
             value={series.repetitions}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)} // <-- Linha modificada/adicionada
           />
         </View>
       ))}
@@ -124,4 +134,3 @@ export default function ExerciciosEscolhidos({ navigation }) {
     </View>
   );
 }
-
