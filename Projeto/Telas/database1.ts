@@ -244,6 +244,22 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
     return result;
   };
 
+  export const getLastSeriesByExercise = (db: SQLiteDatabase, idexercicio:number) => {
+    const lastTreinoId = db.getAllSync<{lastTreinoId: number;}>(`
+    SELECT MAX(idTreino) as lastTreinoId
+        FROM serie
+        WHERE idExercicio = ?
+    `, idexercicio);
+    const results =  db.getAllSync<{kg: number; reps: number;}>(`
+    SELECT carga as kg, reps as repetitions
+              FROM serie
+              WHERE idExercicio = ? AND idTreino = ?
+              ORDER BY idSerie ASC
+
+    `, idexercicio, lastTreinoId[0].lastTreinoId);
+    return results;
+  };
+
   export const getTreinosTemplate = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<TreinoTemplate>(`
     select serietemplate.qntSeries, exercicio.nome as exercicionome, treinotemplate.nome as treinonome, treinotemplate.idtreinotemplate from treinotemplate 

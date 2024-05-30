@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState, useContext } from 'react';
 import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
-import { deleteSeriesTemplate, deleteTreinos, deleteTreinosTemplate, getAllExercicios, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinosTemplateFull } from './database1';
+import { deleteSeriesTemplate, deleteTreinos, deleteTreinosTemplate, getAllExercicios, getLastSeriesByExercise, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinosTemplateFull } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -21,6 +21,8 @@ export default function TelaNovoTreino({ navigation }){
     useFocusEffect(
       React.useCallback(() => {
         loadTreinosTemplate();
+        //const results = getLastSeriesByExercise(db, 2);
+        //console.log(results);
         setRefresh(!refresh);
         // Perform any other actions when the screen is focused
       }, [])
@@ -29,9 +31,9 @@ export default function TelaNovoTreino({ navigation }){
     const iniciarTreinoTemplate = async ( item ) =>{
       console.log(item.idTreinoTemplate);
       const result = getTreinosTemplateById(db, item.idTreinoTemplate);
-//      console.log(result);
+      //console.log(result);
       setExercises(result);
-      console.log(exercises);
+      //console.log(exercises);
       navigation.navigate('ExerciciosEscolhidos');
     };
 
@@ -39,7 +41,7 @@ export default function TelaNovoTreino({ navigation }){
       console.log('carregando treinos');
       try {
           const results = await getTreinosTemplate(db);
-          //console.log('treinos carregados', results);
+          console.log('treinos carregados', results);
           // Agrupar os exercícios pelo ID do treino
       const treinosComExercicios = {};
       results.forEach(item => {
