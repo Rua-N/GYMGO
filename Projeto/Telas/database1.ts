@@ -28,10 +28,26 @@ interface TreinoTemplate{
   qntSeries: number;
   idexercicio: number;
 }
+interface Informacoes{
+  id : number;
+  Peso: number;
+  CircunferenciaCintura: number;
+  CircunferenciaQuadril: number;
+  CircunferenciaAbdomen: number;
+  CircunferenciaBracoEsqRelax: number;
+  CircunferenciaBracoDirRelax: number;
+  CircunferenciaBracoEsqContraido: number;
+  CircunferenciaBracoDirContraido: number;
+  CircunferenciaCoxaEsq: number;
+  CircunferenciaCoxaDir: number;
+  CircunferenciaPanturrilhaEsq: number;
+  CircunferenciaPanturrilhaDir: number;
+  Data : string;
+}
 
 export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     console.log(FileSystem.documentDirectory);
-    const DATABASE_VERSION = 5;
+    const DATABASE_VERSION = 6;
 
     let { user_version: currentDbVersion } = await db.getFirstAsync<{ user_version: number }>(
       'PRAGMA user_version'
@@ -172,6 +188,28 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   `);
       currentDbVersion = 5;
      }
+     if (currentDbVersion === 5) {
+      console.log('Banco de Dados sendo atualizado para v6');
+      const result = await db.execAsync(`
+      CREATE TABLE Usuario (
+        id INTEGER PRIMARY KEY NOT NULL,
+        Peso NUMBER,
+        CircunferenciaCintura NUMBER,
+        CircunferenciaQuadril NUMBER,
+        CircunferenciaAbdomen NUMBER,
+        CircunferenciaBracoEsqRelax NUMBER,
+        CircunferenciaBracoDirRelax NUMBER,
+        CircunferenciaBracoEsqContraido NUMBER,
+        CircunferenciaBracoDirContraido NUMBER,
+        CircunferenciaCoxaEsq NUMBER,
+        CircunferenciaCoxaDir NUMBER,
+        CircunferenciaPanturrilhaEsq NUMBER,
+        CircunferenciaPanturrilhaDir NUMBER,
+        Data DATE NOT NULL
+    );
+  `);
+      currentDbVersion = 6;
+     }
     await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
   }
   
@@ -211,7 +249,44 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
       console.log(idtreino);
       db.runSync('INSERT INTO serie(idExercicio, carga, reps, idTreino) VALUES (?, ?, ?, ?)', idExercicio, carga, reps, idtreino[0].idTreino);
   }
-
+  export const saveInformacoes = (db: SQLiteDatabase, 
+    Peso: number,
+    CircunferenciaCintura: number,
+    CircunferenciaQuadril: number,
+    CircunferenciaAbdomen: number,
+    CircunferenciaBracoEsqRelax: number,
+    CircunferenciaBracoDirRelax: number,
+    CircunferenciaBracoEsqContraido: number,
+    CircunferenciaBracoDirContraido: number,
+    CircunferenciaCoxaEsq: number,
+    CircunferenciaCoxaDir: number,
+    CircunferenciaPanturrilhaEsq: number,
+    CircunferenciaPanturrilhaDir: number,
+    Data : string,) =>{
+      
+      
+      db.runSync(`INSERT INTO Usuario (
+        Peso, CircunferenciaCintura, CircunferenciaQuadril, 
+        CircunferenciaAbdomen, CircunferenciaBracoEsqRelax, 
+        CircunferenciaBracoDirRelax, CircunferenciaBracoEsqContraido, 
+        CircunferenciaBracoDirContraido, CircunferenciaCoxaEsq, 
+        CircunferenciaCoxaDir, CircunferenciaPanturrilhaEsq, 
+        CircunferenciaPanturrilhaDir, Data) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, Peso,
+        CircunferenciaCintura,
+        CircunferenciaQuadril,
+        CircunferenciaAbdomen,
+        CircunferenciaBracoEsqRelax,
+        CircunferenciaBracoDirRelax,
+        CircunferenciaBracoEsqContraido,
+        CircunferenciaBracoDirContraido,
+        CircunferenciaCoxaEsq,
+        CircunferenciaCoxaDir,
+        CircunferenciaPanturrilhaEsq,
+        CircunferenciaPanturrilhaDir,
+        Data);
+  }
 
   export const getExercicios = async (db: SQLiteDatabase) => {
     return await db.getAllAsync<Exercicio>('SELECT * FROM exercicio');
@@ -316,4 +391,10 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
     return await db.getAllAsync<Serie>('SELECT idtreino, idserie, reps, carga FROM serie');
   };
   
+  export const getInformacoes =  (db: SQLiteDatabase) => {
 
+    
+    const results = db.getFirstSync<Informacoes>('SELECT * FROM Usuario ORDER BY Id DESC LIMIT 1');
+    console.log(results);
+    return results;
+  }; 
