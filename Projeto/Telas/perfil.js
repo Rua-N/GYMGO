@@ -1,28 +1,68 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect} from 'react';
 import { View, Text, TouchableHighlight, Image, TextInput, Pressable, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
+import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
+import { getExercicios, getInformacoes, migrateDbIfNeeded, saveInformacoes } from './database1';
+
 
 const EditPesoPadrao = ({ toggleEditing }) => {
-  const [peso, setPeso] = useState('70');
-  const [cintura, setCintura] = useState('80');
-  const [quadril, setQuadril] = useState('90');
-  const [abdomen, setAbdomen] = useState('85');
-  const [bracoEsqRelax, setBracoEsqRelax] = useState('30');
-  const [bracoDirRelax, setBracoDirRelax] = useState('31');
-  const [bracoEsqContraido, setBracoEsqContraido] = useState('32');
-  const [bracoDirContraido, setBracoDirContraido] = useState('33');
-  const [coxaEsq, setCoxaEsq] = useState('50');
-  const [coxaDir, setCoxaDir] = useState('51');
-  const [panturrilhaEsq, setPanturrilhaEsq] = useState('40');
-  const [panturrilhaDir, setPanturrilhaDir] = useState('41');
+  const [peso, setPeso] = useState('');
+  const [cintura, setCintura] = useState('');
+  const [quadril, setQuadril] = useState('');
+  const [abdomen, setAbdomen] = useState('');
+  const [bracoEsqRelax, setBracoEsqRelax] = useState('');
+  const [bracoDirRelax, setBracoDirRelax] = useState('');
+  const [bracoEsqContraido, setBracoEsqContraido] = useState('');
+  const [bracoDirContraido, setBracoDirContraido] = useState('');
+  const [coxaEsq, setCoxaEsq] = useState('');
+  const [coxaDir, setCoxaDir] = useState('');
+  const [panturrilhaEsq, setPanturrilhaEsq] = useState('');
+  const [panturrilhaDir, setPanturrilhaDir] = useState('');
   const [isEditingPeso, setIsEditingPeso] = useState(false);
+  const db = useSQLiteContext();
 
-  //faz o 'footer' sumir
+  function getDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    return `${date}-${month}-${year}`;
+  }
+
   const editando = () => {
+    if (isEditingPeso) {
+      saveInformacoes(db,
+        peso, cintura, quadril, abdomen, bracoEsqRelax, bracoDirRelax,
+        bracoEsqContraido, bracoDirContraido, coxaEsq, coxaDir,
+        panturrilhaEsq, panturrilhaDir, getDate()
+      )
+    }
     setIsEditingPeso(!isEditingPeso);
     toggleEditing(!isEditingPeso);
   };
 
+  useEffect(() => {
+    loadInformacoes();
+  }, []);
+
+  const loadInformacoes = () =>{
+    const infos = getInformacoes(db)
+  if (infos) {
+    setPeso(infos.Peso !== undefined ? infos.Peso.toString() : '');
+    setCintura(infos.CircunferenciaCintura !== undefined ? infos.CircunferenciaCintura.toString() : '');
+    setQuadril(infos.CircunferenciaQuadril !== undefined ? infos.CircunferenciaQuadril.toString() : '');
+    setAbdomen(infos.CircunferenciaAbdomen !== undefined ? infos.CircunferenciaAbdomen.toString() : '');
+    setBracoEsqRelax(infos.CircunferenciaBracoEsqRelax !== undefined ? infos.CircunferenciaBracoEsqRelax.toString() : '');
+    setBracoDirRelax(infos.CircunferenciaBracoDirRelax !== undefined ? infos.CircunferenciaBracoDirRelax.toString() : '');
+    setBracoEsqContraido(infos.CircunferenciaBracoEsqContraido !== undefined ? infos.CircunferenciaBracoEsqContraido.toString() : '');
+    setBracoDirContraido(infos.CircunferenciaBracoDirContraido !== undefined ? infos.CircunferenciaBracoDirContraido.toString() : '');
+    setCoxaEsq(infos.CircunferenciaCoxaEsq !== undefined ? infos.CircunferenciaCoxaEsq.toString() : '');
+    setCoxaDir(infos.CircunferenciaCoxaDir !== undefined ? infos.CircunferenciaCoxaDir.toString() : '');
+    setPanturrilhaEsq(infos.CircunferenciaPanturrilhaEsq !== undefined ? infos.CircunferenciaPanturrilhaEsq.toString() : '');
+    setPanturrilhaDir(infos.CircunferenciaPanturrilhaDir !== undefined ? infos.CircunferenciaPanturrilhaDir.toString() : '');
+  }
+  console.log(infos);
+  }
   return (
     <View style={estilos.body}>
       <View>
@@ -180,14 +220,10 @@ export default class TelaPerfil extends Component {
   render() {
     return (
       <View style={estilos.container}>
-        {/*header*/}
-        <View style={estilos.header}>
-        </View>
-        {/*header*/}
+        <View style={estilos.header}></View>
         <View style={estilos.body}>
           <EditPesoPadrao toggleEditing={this.toggleEditing} />
         </View>
-        {/*Footer vvv*/}
         {!this.state.isEditing && (
           <View style={estilos.footer}>
             <View>
@@ -207,7 +243,6 @@ export default class TelaPerfil extends Component {
             </View>
           </View>
         )}
-        {/*Footer ^^^*/}
       </View>
     );
   }

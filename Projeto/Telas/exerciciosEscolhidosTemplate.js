@@ -3,7 +3,7 @@ import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native'
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
-import { saveTreinoVazio, saveSerie, getSeries, saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate } from './database1';
+import { saveTreinoVazio, saveSerie, getSeries, saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate, getLastTreinoTemplate } from './database1';
 
 export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const db = useSQLiteContext();
@@ -11,7 +11,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const [localExercises, setLocalExercises] = useState(exercises);
   const today = new Date();
   const [nomeTreino, setNomeTreino] = useState('');
-
+  
   function getDate() {
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -91,6 +91,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
       
       if (exercise.series) {
         const totalSeries = exercise.series.length; 
+        
         saveSerieTemplate(db, exercise.idExercicio, totalSeries);
         console.log('Número total de séries:', totalSeries);
       }

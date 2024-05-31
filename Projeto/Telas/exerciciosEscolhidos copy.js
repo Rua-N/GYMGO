@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+/*import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
-import { saveTreinoVazio, saveSerie, getLastSeriesByExercise } from './database1';
+import { saveTreinoVazio, saveSerie, getSeries } from './database1';
 
 export default function ExerciciosEscolhidos({ navigation }) {
   const db = useSQLiteContext();
@@ -11,31 +11,36 @@ export default function ExerciciosEscolhidos({ navigation }) {
   const [localExercises, setLocalExercises] = useState([]);
 
   useEffect(() => {
-    initializeExercises();
-  }, [exercises]);
-
-  const initializeExercises = async () => {
-    const initializedExercises = await Promise.all(exercises.map(async (exercise) => {
-      let series = exercise.series || [];
-      if (series.length === 0 && exercise.qntSeries) {
-        series = Array.from({ length: exercise.qntSeries }, () => ({ kg: '', repetitions: '' }));
+    // Inicializar localExercises com as séries vazias baseadas em qntSeries
+    const initializeExercises = exercises.map(exercise => {
+      if (exercise.qntSeries) {
+        const series = Array.from({ length: exercise.qntSeries }, () => ({ kg: '', repetitions: '' }));
+        return { ...exercise, series };
       }
-      const previousSeries = await getLastSeriesByExercise(db, exercise.idExercicio);
-      return { ...exercise, series, previousSeries };
-    }));
-    setLocalExercises(initializedExercises);
-  };
+      return exercise;
+    });
+    setLocalExercises(initializeExercises);
+  }, [exercises]); // <-- Linha modificada/adicionada
+
+  const today = new Date();
+  
+  function getDate() {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const year = today.getFullYear();
+    const date = today.getDate();
+    return `${date}-${month}-${year}`;
+  }
 
   const addSeries = (exerciseId) => {
     const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
-        const newSeries = [...(exercise.series || []), { kg: '', repetitions: '' }];
-        return { ...exercise, series: newSeries };
+        return { ...exercise, series: [...(exercise.series || []), { kg: '', repetitions: '' }] };
       }
       return exercise;
     });
     setLocalExercises(updatedExercises);
-    setExercises(updatedExercises);
+    setExercises(updatedExercises); // <-- Linha modificada/adicionada
   };
 
   const updateSeries = (exerciseId, seriesIndex, field, value) => {
@@ -52,7 +57,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
       return exercise;
     });
     setLocalExercises(updatedExercises);
-    setExercises(updatedExercises);
+    setExercises(updatedExercises); // <-- Linha modificada/adicionada
   };
 
   const renderExercise = ({ item }) => (
@@ -61,22 +66,17 @@ export default function ExerciciosEscolhidos({ navigation }) {
       {item.series && item.series.map((series, index) => (
         <View key={index} style={estilos.seriesContainer}>
           <Text style={estilos.seriesText}>Série {index + 1}</Text>
-          <Text style={estilos.seriesText}> Anterior: 
-            {item.previousSeries && item.previousSeries[index] 
-              ? `${item.previousSeries[index].kg} kg x ${item.previousSeries[index].repetitions}` 
-              : '-'}
-          </Text>
           <TextInput
             style={estilos.seriesInput}
             placeholder="KG"
             value={series.kg}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)} // <-- Linha modificada/adicionada
           />
           <TextInput
             style={estilos.seriesInput}
             placeholder="Repetições"
             value={series.repetitions}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)} // <-- Linha modificada/adicionada
           />
         </View>
       ))}
@@ -96,29 +96,26 @@ export default function ExerciciosEscolhidos({ navigation }) {
         exercise.series.forEach((series, index) => {
           saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
           console.log('salvando: ' + exercise.idExercicio, series.kg, series.repetitions)
+          //console.log(`Série ${index + 1}: Peso = ${series.kg}, Repetições = ${series.repetitions}`);
         });
       }
+      console.log(getSeries(db))
     });
     navigation.navigate('TelaHome');
-  };
-
-  const getDate = () => {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-    const date = today.getDate();
-    return `${date}-${month}-${year}`;
+    // Aqui você pode inserir a lógica para salvar os dados no banco de dados
   };
 
   return (
     <View style={estilos.container}>
+      {/*header
       <View style={estilos.header}>  
         <Pressable onPress={() => navigation.navigate('TelaHome')}>    
           <View style={estilos.botaoVoltar}>
             <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
           </View>
-        </Pressable>  
-      </View>
+        </Pressable>	
+      </View>  
+      {/*header
       <View style={estilos.body}>
       <FlatList
         data={localExercises}
@@ -129,6 +126,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
         <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
           <Text style={estilos.bTexto}>Finalizar Treino</Text>
         </Pressable>
+        
         <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
           <Text style={estilos.bTexto}>Adicionar Exercício</Text>
         </Pressable>
@@ -136,4 +134,4 @@ export default function ExerciciosEscolhidos({ navigation }) {
       </View>
     </View>
   );
-}
+}*/
