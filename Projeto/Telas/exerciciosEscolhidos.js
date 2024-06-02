@@ -7,8 +7,9 @@ import { saveTreinoVazio, saveSerie, getLastSeriesByExercise } from './database1
 
 export default function ExerciciosEscolhidos({ navigation }) {
   const db = useSQLiteContext();
-  const { exercises, setExercises } = useContext(ExerciseContext);
+  const { exercises, setExercises, nomeTreino: nomeTreinoContext, setNomeTreino } = useContext(ExerciseContext);
   const [localExercises, setLocalExercises] = useState([]);
+  const [nomeTreino, setNomeTreinoState] = useState(nomeTreinoContext || 'Treino Vazio');
 
   useEffect(() => {
     initializeExercises();
@@ -88,18 +89,29 @@ export default function ExerciciosEscolhidos({ navigation }) {
 
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
-    saveTreinoVazio(db, getDate());
+    saveTreinoVazio(db, getDate(), nomeTreino);
+
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
-      
+
       if (exercise.series) {
         exercise.series.forEach((series, index) => {
-          saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
-          console.log('salvando: ' + exercise.idExercicio, series.kg, series.repetitions)
+          if (series.kg && series.repetitions) { // Verificação para garantir que a série tenha valores
+            saveSerie(db, exercise.idExercicio, series.kg, series.repetitions);
+            console.log('Salvando:', exercise.idExercicio, series.kg, series.repetitions);
+          } else {
+            console.log('Série ignorada por falta de valores:', series);
+          }
         });
       }
     });
+
     navigation.navigate('TelaHome');
+  };
+
+  const handleNomeChange = (text) => {
+    setNomeTreinoState(text);
+    setNomeTreino(text); // Atualiza o nome no contexto também
   };
 
   const getDate = () => {
@@ -118,21 +130,26 @@ export default function ExerciciosEscolhidos({ navigation }) {
             <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
           </View>
         </Pressable>  
+        <TextInput
+          value={nomeTreino}
+          onChangeText={handleNomeChange}
+          placeholder="Nome do treino"
+        />
       </View>
       <View style={estilos.body}>
-      <FlatList
-        data={localExercises}
-        renderItem={renderExercise}
-        keyExtractor={(item) => item.idExercicio.toString()}
-      />
-      <View style={estilos.footer}> 
-        <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
-          <Text style={estilos.bTexto}>Finalizar Treino</Text>
-        </Pressable>
-        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
-          <Text style={estilos.bTexto}>Adicionar Exercício</Text>
-        </Pressable>
-      </View>
+        <FlatList
+          data={localExercises}
+          renderItem={renderExercise}
+          keyExtractor={(item) => item.idExercicio.toString()}
+        />
+        <View style={estilos.footer}> 
+          <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
+            <Text style={estilos.bTexto}>Finalizar Treino</Text>
+          </Pressable>
+          <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
+            <Text style={estilos.bTexto}>Adicionar Exercício</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );
