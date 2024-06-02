@@ -2,18 +2,19 @@ import React, { Component, useEffect, useState, useContext } from 'react';
 import { View, Text,FlatList, Animated, TouchableOpacity, Image, Pressable, TouchableHighlight, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
-import { deleteSeriesTemplate, deleteTreinos, deleteTreinosTemplate, getAllExercicios, getLastSeriesByExercise, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinosTemplateFull } from './database1';
+import { deleteSeriesTemplate, deleteTreinos, deleteTreinosTemplate, getAllExercicios, getLastSeriesByExercise, getLastTreinoTemplate, getSeriesTemplate, getTreinosTemplate, getTreinosTemplateById, getTreinoTemplate, getTreinosTemplateFull } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function TelaNovoTreino({ navigation }){
 
-  const { exercises, setExercises, clearExercises } = useContext(ExerciseContext);
+  const { exercises, setExercises, clearExercises, setNomeTreino } = useContext(ExerciseContext);
   const [treinos, setTreinosTemplate] = useState([]);
   const [refresh, setRefresh] = useState(false);
   db = useSQLiteContext();
 
     useEffect(() => {
+      
       loadTreinosTemplate();
     }, [refresh]);
 
@@ -31,13 +32,16 @@ export default function TelaNovoTreino({ navigation }){
     const iniciarTreinoTemplate = async ( item ) =>{
       console.log(item.idTreinoTemplate);
       const result = getTreinosTemplateById(db, item.idTreinoTemplate);
-      //console.log(result);
+      console.log('NOME: '+ item.treinonome);
       setExercises(result);
+      setNomeTreino(item.treinonome);
       //console.log(exercises);
       navigation.navigate('ExerciciosEscolhidos');
     };
 
     const loadTreinosTemplate = async () =>{
+      //deleteTreinosTemplate(db);
+      //deleteSeriesTemplate(db);
       console.log('carregando treinos');
       try {
           const results = await getTreinosTemplate(db);
@@ -82,7 +86,6 @@ export default function TelaNovoTreino({ navigation }){
       
       <View style={estilos.unselectedItemContainer}>
         <TouchableOpacity onPress={() => iniciarTreinoTemplate(item)}>
-        <Text style={estilos.bTexto}>ID: {item.idTreinoTemplate}</Text>
         <Text >Nome: {item.treinonome}</Text>
         <Text style={estilos.texto}>Exercícios:</Text>
         <FlatList

@@ -14,6 +14,8 @@ interface Treino {
   treinonome : string;
   exercicionome : string;
   dataTreino : string;
+  kg: number;
+  repetitions: number;
 }
 interface Serie{
   idTreino:number;
@@ -223,22 +225,24 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   }
 
   export const saveTreinoVazio =(db: SQLiteDatabase, 
-    datatreino: string, ) =>{
-    db.runSync('INSERT INTO treino(dataTreino) VALUES (?)', datatreino);
+    datatreino: string, 
+    nome: string,
+  ) =>{
+    db.runSync('INSERT INTO treino(dataTreino, nome) VALUES (?, ?)', datatreino, nome);
   }
 
-  export const saveTreinoTemplate = async (db: SQLiteDatabase, 
+  export const saveTreinoTemplate = (db: SQLiteDatabase, 
     nome: string, ) =>{
-    await db.runAsync('INSERT INTO treinotemplate(nome) VALUES (?)', nome);
+    db.runSync('INSERT INTO treinotemplate(nome) VALUES (?)', nome);
   }
 
-  export const saveSerieTemplate = async (db: SQLiteDatabase, 
+  export const saveSerieTemplate = (db: SQLiteDatabase, 
     idExercicio: number, 
     qntSeries: number,
     idtreinotemplate: number,
   ) =>{
-    const idtreino = await db.getAllSync<{idTreinoTemplate:number}>('SELECT idTreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC LIMIT 1');
-    await db.runSync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idtreino[0].idTreinoTemplate, qntSeries);
+    const idtreino = db.getAllSync<{idTreinoTemplate:number}>('SELECT idTreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC LIMIT 1');
+    db.runSync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idtreino[0].idTreinoTemplate, qntSeries);
   }
   
   export const saveSerie = (db: SQLiteDatabase, 
@@ -295,7 +299,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   
   export const getTreinos = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<Treino>(`
-    SELECT treino.dataTreino as dataTreino, treino.idtreino as idTreino, treino.nome as treinonome, exercicio.nome as exercicionome, serie.idserie FROM TREINO 
+    SELECT carga as kg, reps as repetitions, treino.dataTreino as dataTreino, treino.idtreino as idTreino, treino.nome as treinonome, exercicio.nome as exercicionome, serie.idserie FROM TREINO 
 join serie on treino.idtreino = serie.idtreino 
 join exercicio on exercicio.idexercicio = serie.idexercicio
  ORDER BY idTreino DESC
@@ -341,10 +345,16 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
     join serietemplate on serietemplate.idtreinotemplate = treinotemplate.idtreinotemplate
     join exercicio on exercicio.idexercicio = serietemplate.idexercicio;
     `);
+    console.log(result);
+    return result;
+  };
+  export const getTreinoTemplate = async (db: SQLiteDatabase) => {
+    const result = await db.getAllAsync<{nome:string; idtreinotemplate:string}>(`
+    select * from treinotemplate;
+    `);
 
     return result;
   };
-
 
  export const getAllExercicios = async (db: SQLiteDatabase) => {
     const result = await db.getAllAsync<{nome:string; nomegrupomuscular:string}>(`
