@@ -164,7 +164,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
           value={nomeTreino}
           onChangeText={handleNomeChange}
           placeholder="Nome do treino"
-          placeholderTextColor=''
+          placeholderTextColor='#eeeeee80'
         />  
       </View>
       

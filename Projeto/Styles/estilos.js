@@ -202,7 +202,7 @@ export const estilos = StyleSheet.create({
   }, input: {
     fontSize: 18,
     textAlign:'center',
-    color:'#eeeeee80',
+    color:'#FEFBF6',
   },seriesInput: {
     flex: 1,
     borderColor: '#555',

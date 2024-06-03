@@ -96,7 +96,8 @@ export default function TelaNovoTreino({ navigation }) {
           <Text style={estilos.bTexto}>Iniciar treino vazio</Text>
         </Pressable>
         <Text style={estilos.bTexto}>Treinos Salvos</Text>
-        <ScrollView>
+
+
           <View style={[estilos.listaContainer]}>
             
             <View style={estilos.botaoVoltar}>
@@ -108,12 +109,13 @@ export default function TelaNovoTreino({ navigation }) {
               <FlatList
                 data={treinos}
                 renderItem={renderItem}
-                contentContainerStyle={{ paddingBottom: 70 }}
+                contentContainerStyle={{ paddingBottom: 250 }}
                 keyExtractor={(item) => item.idTreinoTemplate.toString()}
               />
             </View>
           </View>
-        </ScrollView>
+
+
       </View>
 
       {/*Footer vvv*/}

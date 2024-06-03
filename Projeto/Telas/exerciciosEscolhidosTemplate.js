@@ -141,7 +141,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
           value={nomeTreino} // Vincula o valor do TextInput ao estado
           onChangeText={handleNomeChange} // Atualiza o estado quando o texto muda
           placeholder="Nome do treino"
-          placeholderTextColor='#eeeeee'
+          placeholderTextColor='#eeeeee80'
         />	
       </View>  
       {/*header*/}
