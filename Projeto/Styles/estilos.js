@@ -112,11 +112,22 @@ export const estilos = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
+  seriesButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+
+  },
   addSeriesButton: {
     color: '#76ABAE',
     textAlign: 'center',
     marginTop: 10,
     //fontSize: '16sp'
+  },
+  removeSeriesButton: {
+    color: '#76ABAE',
+    textAlign: 'center',
+    marginTop: 10,
   },
   addExerciseButton: {
     bottom: 20,
@@ -185,8 +196,6 @@ export const estilos = StyleSheet.create({
     fontSize: 14,
     marginLeft:10,
     marginBottom: 9
-  },seriesText: {
-    color: '#eeeeee',
   }, label: {
     //fontSize: '18px',
     marginBottom: 8,
@@ -316,5 +325,6 @@ export const estilos = StyleSheet.create({
   seriesText: {
     fontSize: 14,
     marginLeft: 10,
+    color: '#eeeeee',
   },
 })

@@ -12,7 +12,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const [localExercises, setLocalExercises] = useState(exercises);
   const today = new Date();
   const [nomeTreino, setNomeTreino] = useState('');
-  
+
   function getDate() {
     const today = new Date();
     const month = today.getMonth() + 1;
@@ -20,6 +20,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
     const date = today.getDate();
     return `${date}-${month}-${year}`;
   }
+
   const handleNomeChange = (text) => {
     setNomeTreino(text); // Atualiza o estado com o valor do TextInput
   };
@@ -33,6 +34,18 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
     const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
         return { ...exercise, series: [...(exercise.series || []), { kg: '', repetitions: '' }] };
+      }
+      return exercise;
+    });
+    setLocalExercises(updatedExercises);
+    setExercises(updatedExercises);
+  };
+
+  const removeSeries = (exerciseId) => {
+    const updatedExercises = localExercises.map(exercise => {
+      if (exercise.idExercicio === exerciseId && exercise.series.length > 0) {
+        const newSeries = exercise.series.slice(0, -1); // Remove a última série
+        return { ...exercise, series: newSeries };
       }
       return exercise;
     });
@@ -69,7 +82,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
             placeholderTextColor='#eeeeee80'
             keyboardType='numeric'
             value={series.kg}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
+            editable={false} 
           />
           <TextInput
             style={estilos.seriesInput}
@@ -77,13 +90,20 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
             placeholderTextColor='#eeeeee80'
             keyboardType='numeric'
             value={series.repetitions}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
+            editable={false} 
           />
         </View>
       ))}
-      <Pressable onPress={() => addSeries(item.idExercicio)}>
+      <View style={estilos.seriesButtonsContainer}>
+        <Pressable onPress={() => addSeries(item.idExercicio)}>
         <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
-      </Pressable>
+        </Pressable>
+        {item.series && item.series.length > 0 && (
+          <Pressable onPress={() => removeSeries(item.idExercicio)}>
+            <Text style={estilos.removeSeriesButton}>Remover Série</Text>
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 
@@ -117,12 +137,12 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
           </View>
         </Pressable>
         <TextInput
-        style={estilos.input}
-        value={nomeTreino} // Vincula o valor do TextInput ao estado
-        onChangeText={handleNomeChange} // Atualiza o estado quando o texto muda
-        placeholder="Nome do treino"
-        placeholderTextColor='#eeeeee'
-      />	
+          style={estilos.input}
+          value={nomeTreino} // Vincula o valor do TextInput ao estado
+          onChangeText={handleNomeChange} // Atualiza o estado quando o texto muda
+          placeholder="Nome do treino"
+          placeholderTextColor='#eeeeee'
+        />	
       </View>  
       {/*header*/}
       <View style={estilos.body}>
@@ -139,7 +159,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
         </Pressable>
         
         <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTemplate', { selectedExercises: exercises })}>
-          <Text style={estilos.bTexto}>Adicionar Exercício</Text>
+          <Text style={estilos.bTexto}>Mudar Exercícios</Text>
         </Pressable>
       </View>
     </View>
