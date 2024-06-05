@@ -18,11 +18,13 @@ export default function ExerciciosEscolhidos({ navigation }) {
   const initializeExercises = async () => {
     const initializedExercises = await Promise.all(exercises.map(async (exercise) => {
       let series = exercise.series || [];
+      let initializedAutomatically = false;
       if (series.length === 0 && exercise.qntSeries) {
         series = Array.from({ length: exercise.qntSeries }, () => ({ kg: '', repetitions: '' }));
+        initializedAutomatically = true;
       }
       const previousSeries = await getLastSeriesByExercise(db, exercise.idExercicio);
-      return { ...exercise, series, previousSeries };
+      return { ...exercise, series, previousSeries, initializedAutomatically };
     }));
     setLocalExercises(initializedExercises);
   };
@@ -31,6 +33,18 @@ export default function ExerciciosEscolhidos({ navigation }) {
     const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
         const newSeries = [...(exercise.series || []), { kg: '', repetitions: '' }];
+        return { ...exercise, series: newSeries };
+      }
+      return exercise;
+    });
+    setLocalExercises(updatedExercises);
+    setExercises(updatedExercises);
+  };
+
+  const removeSeries = (exerciseId) => {
+    const updatedExercises = localExercises.map(exercise => {
+      if (exercise.idExercicio === exerciseId && exercise.series.length > 0) {
+        const newSeries = exercise.series.slice(0, -1); // Remove a última série
         return { ...exercise, series: newSeries };
       }
       return exercise;
@@ -85,9 +99,18 @@ export default function ExerciciosEscolhidos({ navigation }) {
           />
         </View>
       ))}
-      <Pressable onPress={() => addSeries(item.idExercicio)}>
-        <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
-      </Pressable>
+      {!item.initializedAutomatically && (
+        <View style={estilos.seriesButtonsContainer}>
+          <Pressable onPress={() => addSeries(item.idExercicio)}>
+            <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
+          </Pressable>
+          {item.series && item.series.length > 0 && (
+            <Pressable onPress={() => removeSeries(item.idExercicio)}>
+              <Text style={estilos.removeSeriesButton}>Remover Série</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
     </View>
   );
 
@@ -126,22 +149,24 @@ export default function ExerciciosEscolhidos({ navigation }) {
     return `${date}-${month}-${year}`;
   };
 
+  const allSeriesInitializedAutomatically = localExercises.every(exercise => exercise.initializedAutomatically);
+
   return (
     <View style={estilos.container}>
-       <View style={estilos.doladoHeader}> 
-      
-          <Pressable onPress={() => navigation.navigate('TelaHome')}>    
-            <View style={estilos.botaoVoltar}>
-              <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
-            </View>
-          </Pressable>
-          <TextInput style={estilos.input}
-            value={nomeTreino}
-            onChangeText={handleNomeChange}
-            placeholder="Nome do treino"
-            placeholderTextColor=''
-          />  
+      <View style={estilos.doladoHeader}> 
+        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+          <View style={estilos.botaoVoltar}>
+            <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
           </View>
+        </Pressable>
+        <TextInput 
+          style={estilos.input}
+          value={nomeTreino}
+          onChangeText={handleNomeChange}
+          placeholder="Nome do treino"
+          placeholderTextColor='#eeeeee80'
+        />  
+      </View>
       
       <View style={estilos.body}>
         <FlatList
@@ -154,9 +179,11 @@ export default function ExerciciosEscolhidos({ navigation }) {
           <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
             <Text style={estilos.bTexto}>Finalizar Treino</Text>
           </Pressable>
-          <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
-            <Text style={estilos.bTexto}>Adicionar Exercício</Text>
-          </Pressable>
+          {!allSeriesInitializedAutomatically && (
+            <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTreino', { selectedExercises: exercises })}>
+              <Text style={estilos.bTexto}>Mudar Exercícios</Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </View>

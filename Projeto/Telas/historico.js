@@ -79,6 +79,7 @@ function TelaHistorico({ navigation }) {
       <FlatList
         data={treinos}
         renderItem={renderItem}
+        contentContainerStyle={{ paddingBottom: 120 }}
         keyExtractor={(item) => item.idTreino.toString()}
       />
       <View style={estilos.footer}>
@@ -104,6 +105,7 @@ function TelaHistorico({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 15,
     flex: 1,
     padding: 10,
   },
