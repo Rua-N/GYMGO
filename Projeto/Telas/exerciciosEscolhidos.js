@@ -54,6 +54,22 @@ export default function ExerciciosEscolhidos({ navigation }) {
   };
 
   const updateSeries = (exerciseId, seriesIndex, field, value) => {
+    if (field === 'kg') {
+      // Remover caracteres inválidos, permitindo apenas números, ponto e vírgula
+      value = value.replace(/[^0-9.,]/g, '');
+  
+      // Substituir vírgulas por pontos
+      value = value.replace(',', '.');
+  
+      // Permitir apenas um único ponto decimal
+      if ((value.match(/\./g) || []).length > 1) {
+        return;
+      }
+    } else if (field === 'repetitions') {
+      // Permitir apenas números inteiros
+      value = value.replace(/[^0-9]/g, '');
+    }
+  
     const updatedExercises = localExercises.map(exercise => {
       if (exercise.idExercicio === exerciseId) {
         const updatedSeries = exercise.series.map((series, index) => {
@@ -82,21 +98,22 @@ export default function ExerciciosEscolhidos({ navigation }) {
               : '-'}
           </Text>
           <TextInput
-            style={estilos.seriesInput}
-            placeholder="KG"
-            placeholderTextColor='#eeeeee80'
-            keyboardType='numeric'
-            value={series.kg}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
-          />
-          <TextInput
-            style={estilos.seriesInput}
-            placeholder="Repetições"
-            placeholderTextColor='#eeeeee80'
-            keyboardType='numeric'
-            value={series.repetitions}
-            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
-          />
+  style={estilos.seriesInput}
+  placeholder="KG"
+  placeholderTextColor='#eeeeee80'
+  keyboardType='numeric'
+  value={series.kg}
+  onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
+/>
+<TextInput
+  style={estilos.seriesInput}
+  placeholder="Repetições"
+  placeholderTextColor='#eeeeee80'
+  keyboardType='numeric'
+  value={series.repetitions}
+  onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
+/>
+
         </View>
       ))}
       {!item.initializedAutomatically && (
