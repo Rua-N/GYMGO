@@ -1,9 +1,8 @@
-import React, { Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { View, Text, TouchableHighlight, Image, TextInput, Pressable, ScrollView } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
 import { getExercicios, getInformacoes, migrateDbIfNeeded, saveInformacoes } from './database1';
-
 
 const EditPesoPadrao = ({ toggleEditing }) => {
   const [peso, setPeso] = useState('');
@@ -28,8 +27,6 @@ const EditPesoPadrao = ({ toggleEditing }) => {
     const date = today.getDate();
     return `${date}-${month}-${year}`;
   }
- // TEclado só de números
-
 
   const editando = () => {
     if (isEditingPeso) {
@@ -47,24 +44,40 @@ const EditPesoPadrao = ({ toggleEditing }) => {
     loadInformacoes();
   }, []);
 
-  const loadInformacoes = () =>{
+  const loadInformacoes = () => {
     const infos = getInformacoes(db)
-  if (infos) {
-    setPeso(infos.Peso !== undefined ? infos.Peso.toString() : '');
-    setCintura(infos.CircunferenciaCintura !== undefined ? infos.CircunferenciaCintura.toString() : '');
-    setQuadril(infos.CircunferenciaQuadril !== undefined ? infos.CircunferenciaQuadril.toString() : '');
-    setAbdomen(infos.CircunferenciaAbdomen !== undefined ? infos.CircunferenciaAbdomen.toString() : '');
-    setBracoEsqRelax(infos.CircunferenciaBracoEsqRelax !== undefined ? infos.CircunferenciaBracoEsqRelax.toString() : '');
-    setBracoDirRelax(infos.CircunferenciaBracoDirRelax !== undefined ? infos.CircunferenciaBracoDirRelax.toString() : '');
-    setBracoEsqContraido(infos.CircunferenciaBracoEsqContraido !== undefined ? infos.CircunferenciaBracoEsqContraido.toString() : '');
-    setBracoDirContraido(infos.CircunferenciaBracoDirContraido !== undefined ? infos.CircunferenciaBracoDirContraido.toString() : '');
-    setCoxaEsq(infos.CircunferenciaCoxaEsq !== undefined ? infos.CircunferenciaCoxaEsq.toString() : '');
-    setCoxaDir(infos.CircunferenciaCoxaDir !== undefined ? infos.CircunferenciaCoxaDir.toString() : '');
-    setPanturrilhaEsq(infos.CircunferenciaPanturrilhaEsq !== undefined ? infos.CircunferenciaPanturrilhaEsq.toString() : '');
-    setPanturrilhaDir(infos.CircunferenciaPanturrilhaDir !== undefined ? infos.CircunferenciaPanturrilhaDir.toString() : '');
+    if (infos) {
+      setPeso(infos.Peso !== undefined ? infos.Peso.toString() : '');
+      setCintura(infos.CircunferenciaCintura !== undefined ? infos.CircunferenciaCintura.toString() : '');
+      setQuadril(infos.CircunferenciaQuadril !== undefined ? infos.CircunferenciaQuadril.toString() : '');
+      setAbdomen(infos.CircunferenciaAbdomen !== undefined ? infos.CircunferenciaAbdomen.toString() : '');
+      setBracoEsqRelax(infos.CircunferenciaBracoEsqRelax !== undefined ? infos.CircunferenciaBracoEsqRelax.toString() : '');
+      setBracoDirRelax(infos.CircunferenciaBracoDirRelax !== undefined ? infos.CircunferenciaBracoDirRelax.toString() : '');
+      setBracoEsqContraido(infos.CircunferenciaBracoEsqContraido !== undefined ? infos.CircunferenciaBracoEsqContraido.toString() : '');
+      setBracoDirContraido(infos.CircunferenciaBracoDirContraido !== undefined ? infos.CircunferenciaBracoDirContraido.toString() : '');
+      setCoxaEsq(infos.CircunferenciaCoxaEsq !== undefined ? infos.CircunferenciaCoxaEsq.toString() : '');
+      setCoxaDir(infos.CircunferenciaCoxaDir !== undefined ? infos.CircunferenciaCoxaDir.toString() : '');
+      setPanturrilhaEsq(infos.CircunferenciaPanturrilhaEsq !== undefined ? infos.CircunferenciaPanturrilhaEsq.toString() : '');
+      setPanturrilhaDir(infos.CircunferenciaPanturrilhaDir !== undefined ? infos.CircunferenciaPanturrilhaDir.toString() : '');
+    }
+    console.log(infos);
   }
-  console.log(infos);
-  }
+
+  const handleNumberInput = (text, setter) => {
+    // Remover caracteres inválidos, permitindo apenas números, ponto e vírgula
+    text = text.replace(/[^0-9.,]/g, '');
+
+    // Substituir vírgulas por pontos
+    text = text.replace(',', '.');
+
+    // Permitir apenas um único ponto decimal
+    if ((text.match(/\./g) || []).length > 1) {
+      return;
+    }
+
+    setter(text);
+  };
+
   return (
     <View style={estilos.body}>
       <View>
@@ -78,7 +91,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={peso}
-            onChangeText={setPeso}
+            onChangeText={(text) => handleNumberInput(text, setPeso)}
             keyboardType='numeric'
           />
         ) : (
@@ -89,7 +102,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={cintura}
-            onChangeText={setCintura}
+            onChangeText={(text) => handleNumberInput(text, setCintura)}
             keyboardType='numeric'
           />
         ) : (
@@ -100,7 +113,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={quadril}
-            onChangeText={setQuadril}
+            onChangeText={(text) => handleNumberInput(text, setQuadril)}
             keyboardType='numeric'
           />
         ) : (
@@ -111,7 +124,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={abdomen}
-            onChangeText={setAbdomen}
+            onChangeText={(text) => handleNumberInput(text, setAbdomen)}
             keyboardType='numeric'
           />
         ) : (
@@ -122,7 +135,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={bracoEsqRelax}
-            onChangeText={setBracoEsqRelax}
+            onChangeText={(text) => handleNumberInput(text, setBracoEsqRelax)}
             keyboardType='numeric'
           />
         ) : (
@@ -133,7 +146,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={bracoDirRelax}
-            onChangeText={setBracoDirRelax}
+            onChangeText={(text) => handleNumberInput(text, setBracoDirRelax)}
             keyboardType='numeric'
           />
         ) : (
@@ -144,7 +157,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={bracoEsqContraido}
-            onChangeText={setBracoEsqContraido}
+            onChangeText={(text) => handleNumberInput(text, setBracoEsqContraido)}
             keyboardType='numeric'
           />
         ) : (
@@ -155,7 +168,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={bracoDirContraido}
-            onChangeText={setBracoDirContraido}
+            onChangeText={(text) => handleNumberInput(text, setBracoDirContraido)}
             keyboardType='numeric'
           />
         ) : (
@@ -166,7 +179,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={coxaEsq}
-            onChangeText={setCoxaEsq}
+            onChangeText={(text) => handleNumberInput(text, setCoxaEsq)}
             keyboardType='numeric'
           />
         ) : (
@@ -177,7 +190,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={coxaDir}
-            onChangeText={setCoxaDir}
+            onChangeText={(text) => handleNumberInput(text, setCoxaDir)}
             keyboardType='numeric'
           />
         ) : (
@@ -188,7 +201,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={panturrilhaEsq}
-            onChangeText={setPanturrilhaEsq}
+            onChangeText={(text) => handleNumberInput(text, setPanturrilhaEsq)}
             keyboardType='numeric'
           />
         ) : (
@@ -199,7 +212,7 @@ const EditPesoPadrao = ({ toggleEditing }) => {
           <TextInput
             style={estilos.txtInput}
             value={panturrilhaDir}
-            onChangeText={setPanturrilhaDir}
+            onChangeText={(text) => handleNumberInput(text, setPanturrilhaDir)}
             keyboardType='numeric'
           />
         ) : (

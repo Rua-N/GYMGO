@@ -371,6 +371,17 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
 
   };
 
+    export const deleteTreinoTemplateById = async (db: SQLiteDatabase, id: number) => {
+    await db.runAsync(`
+    DELETE FROM TreinoTemplate WHERE idTreinoTemplate = ?;
+    `, id);
+    await db.runAsync(`
+      DELETE FROM SerieTemplate WHERE idTreinoTemplate = ?;
+      `, id);
+    console.log('treinos apagado id: ' + id);
+
+  };
+
   export const deleteTreinos = async (db: SQLiteDatabase) => {
     await db.runAsync(`
     DELETE FROM treino;
@@ -382,6 +393,7 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
 
   };
 
+  
   export const deleteSeriesTemplate = async (db: SQLiteDatabase) => {
     await db.runAsync(`
     DELETE FROM SerieTemplate;
