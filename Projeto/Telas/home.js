@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, Pressable, ScrollView,TouchableHighlight } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, Pressable, ScrollView, TouchableHighlight, Alert } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
-import { deleteSeriesTemplate, deleteTreinosTemplate, getTreinosTemplateById, getTreinosTemplate } from './database1';
+import { deleteSeriesTemplate, deleteTreinosTemplate, getTreinosTemplateById, getTreinosTemplate, deleteTreinoTemplateById } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -65,9 +65,30 @@ export default function TelaNovoTreino({ navigation }) {
     navigation.navigate('TelaNovoTemplate');
   };
 
+  const handleLongPress = (item) => {
+    Alert.alert(
+      "Excluir Treino",
+      "Você deseja realmente excluir esse treino?",
+      [
+        {
+          text: "Não",
+          onPress: () => console.log("Exclusão cancelada"),
+          style: "cancel"
+        },
+        {
+          text: "Sim",
+          onPress: () => {
+            deleteTreinoTemplateById(db, item.idTreinoTemplate);
+            setRefresh(!refresh);
+          }
+        }
+      ]
+    );
+  };
+
   const renderItem = ({ item }) => (
     <View style={estilos.ItemContainer}>
-      <TouchableOpacity onPress={() => iniciarTreinoTemplate(item)}>
+      <TouchableOpacity onPress={() => iniciarTreinoTemplate(item)} onLongPress={() => handleLongPress(item)}>
         <Text style={estilos.TextoBold}>Nome: {item.treinonome}</Text>
         <Text style={estilos.texto}>Exercícios:</Text>
         <FlatList
@@ -97,25 +118,21 @@ export default function TelaNovoTreino({ navigation }) {
         </Pressable>
         <Text style={estilos.bTexto}>Treinos Salvos</Text>
 
-
-          <View style={[estilos.listaContainer]}>
-            
-            <View style={estilos.botaoVoltar}>
-              <TouchableOpacity onPress={criarTreinoTemplate}>
-                <Image source={require('../Styles/imgs/X.png')} style={estilos.botaoAdd} />
-              </TouchableOpacity>
-            </View>
-            <View estilos={estilos.itens}>
-              <FlatList
-                data={treinos}
-                renderItem={renderItem}
-                contentContainerStyle={{ paddingBottom: 250 }}
-                keyExtractor={(item) => item.idTreinoTemplate.toString()}
-              />
-            </View>
+        <View style={[estilos.listaContainer]}>
+          <View style={estilos.botaoVoltar}>
+            <TouchableOpacity onPress={criarTreinoTemplate}>
+              <Image source={require('../Styles/imgs/X.png')} style={estilos.botaoAdd} />
+            </TouchableOpacity>
           </View>
-
-
+          <View estilos={estilos.itens}>
+            <FlatList
+              data={treinos}
+              renderItem={renderItem}
+              contentContainerStyle={{ paddingBottom: 250 }}
+              keyExtractor={(item) => item.idTreinoTemplate.toString()}
+            />
+          </View>
+        </View>
       </View>
 
       {/*Footer vvv*/}
