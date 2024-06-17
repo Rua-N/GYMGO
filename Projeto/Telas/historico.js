@@ -17,7 +17,7 @@ function TelaHistorico({ navigation }) {
     try {
       const results = await getTreinos(db);
       console.log('treinos carregados', results);
-
+  
       const treinosComExercicios = {};
       results.forEach(item => {
         if (!treinosComExercicios[item.idTreino]) {
@@ -28,7 +28,7 @@ function TelaHistorico({ navigation }) {
             exercicios: {}
           };
         }
-
+  
         if (!treinosComExercicios[item.idTreino].exercicios[item.exercicionome]) {
           treinosComExercicios[item.idTreino].exercicios[item.exercicionome] = {
             nome: item.exercicionome,
@@ -36,19 +36,22 @@ function TelaHistorico({ navigation }) {
             series: []
           };
         }
-
+  
         treinosComExercicios[item.idTreino].exercicios[item.exercicionome].qntSeries++;
         treinosComExercicios[item.idTreino].exercicios[item.exercicionome].series.push({
           kg: item.kg,
           repetitions: item.repetitions
         });
       });
-
+  
       const treinosArray = Object.values(treinosComExercicios).map(treino => ({
         ...treino,
         exercicios: Object.values(treino.exercicios)
       }));
-
+  
+      // Ordenar os treinos pela ID em ordem decrescente
+      treinosArray.sort((a, b) => b.idTreino - a.idTreino);
+  
       setTreinos(treinosArray);
     } catch (error) {
       console.error('Erro ao carregar treinos', error);
