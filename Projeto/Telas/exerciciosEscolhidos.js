@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native';
+import { View, Text, FlatList, TextInput, Pressable, Image, Alert } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -14,6 +14,10 @@ export default function ExerciciosEscolhidos({ navigation }) {
   useEffect(() => {
     initializeExercises();
   }, [exercises]);
+
+  useEffect(() => {
+    setNomeTreinoState(nomeTreinoContext);
+  }, [nomeTreinoContext]);
 
   const initializeExercises = async () => {
     const initializedExercises = await Promise.all(exercises.map(async (exercise) => {
@@ -98,22 +102,21 @@ export default function ExerciciosEscolhidos({ navigation }) {
               : '-'}
           </Text>
           <TextInput
-  style={estilos.seriesInput}
-  placeholder="KG"
-  placeholderTextColor='#eeeeee80'
-  keyboardType='numeric'
-  value={series.kg}
-  onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
-/>
-<TextInput
-  style={estilos.seriesInput}
-  placeholder="Reps"
-  placeholderTextColor='#eeeeee80'
-  keyboardType='numeric'
-  value={series.repetitions}
-  onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
-/>
-
+            style={estilos.seriesInput}
+            placeholder="KG"
+            placeholderTextColor='#eeeeee80'
+            keyboardType='numeric'
+            value={series.kg}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'kg', text)}
+          />
+          <TextInput
+            style={estilos.seriesInput}
+            placeholder="Reps"
+            placeholderTextColor='#eeeeee80'
+            keyboardType='numeric'
+            value={series.repetitions}
+            onChangeText={(text) => updateSeries(item.idExercicio, index, 'repetitions', text)}
+          />
         </View>
       ))}
       {!item.initializedAutomatically && (
@@ -132,6 +135,17 @@ export default function ExerciciosEscolhidos({ navigation }) {
   );
 
   const handleFinalizeTraining = () => {
+    Alert.alert(
+      'Deseja finalizar o treino?',
+      '',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => finalizeTraining() }
+      ]
+    );
+  };
+
+  const finalizeTraining = () => {
     console.log('Treino Finalizado:');
     saveTreinoVazio(db, getDate(), nomeTreino);
 
@@ -153,6 +167,17 @@ export default function ExerciciosEscolhidos({ navigation }) {
     navigation.navigate('TelaHome');
   };
 
+  const handleBackToHome = () => {
+    Alert.alert(
+      'Realmente deseja sair?',
+      'O progresso será perdido',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => navigation.navigate('TelaHome') }
+      ]
+    );
+  };
+
   const handleNomeChange = (text) => {
     setNomeTreinoState(text);
     setNomeTreino(text); // Atualiza o nome no contexto também
@@ -171,7 +196,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
   return (
     <View style={estilos.container}>
       <View style={estilos.doladoHeader}> 
-        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+        <Pressable onPress={handleBackToHome}>    
           <View style={estilos.botaoVoltar}>
             <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
           </View>

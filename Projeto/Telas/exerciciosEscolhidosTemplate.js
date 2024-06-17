@@ -1,17 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, FlatList, TextInput, Pressable, Image } from 'react-native';
+import { Alert, View, Text, FlatList, TextInput, Pressable, Image } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
-import { saveTreinoVazio, saveSerie, getSeries, saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate, getLastTreinoTemplate } from './database1';
-
+import { saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate } from './database1';
 
 export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const db = useSQLiteContext();
-  const { exercises, setExercises } = useContext(ExerciseContext);
+  const { exercises, setExercises, nomeTreino: nomeTreinoContext, setNomeTreino } = useContext(ExerciseContext);
   const [localExercises, setLocalExercises] = useState(exercises);
   const today = new Date();
-  const [nomeTreino, setNomeTreino] = useState('');
+  const [nomeTreinoState, setNomeTreinoState] = useState('');
+
+  useEffect(() => {
+    setNomeTreinoState(nomeTreinoContext); // Sincronizar estado local com o contexto
+  }, [nomeTreinoContext]);
 
   function getDate() {
     const today = new Date();
@@ -22,7 +25,9 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
   }
 
   const handleNomeChange = (text) => {
-    setNomeTreino(text); // Atualiza o estado com o valor do TextInput
+    setNomeTreinoState(text); // Atualiza o estado com o valor do TextInput
+    setNomeTreino(text); // Atualiza o nome no contexto também
+    console.log(nomeTreinoContext)
   };
 
   useEffect(() => {
@@ -82,7 +87,7 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
             placeholderTextColor='#eeeeee80'
             keyboardType='numeric'
             value={series.kg}
-            editable={false} 
+            editable={false}
           />
           <TextInput
             style={estilos.seriesInput}
@@ -90,13 +95,13 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
             placeholderTextColor='#eeeeee80'
             keyboardType='numeric'
             value={series.repetitions}
-            editable={false} 
+            editable={false}
           />
         </View>
       ))}
       <View style={estilos.seriesButtonsContainer}>
         <Pressable onPress={() => addSeries(item.idExercicio)}>
-        <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
+          <Text style={estilos.addSeriesButton}>Adicionar Série</Text>
         </Pressable>
         {item.series && item.series.length > 0 && (
           <Pressable onPress={() => removeSeries(item.idExercicio)}>
@@ -107,15 +112,36 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
     </View>
   );
 
+  const handleSaveTraining = () => {
+    Alert.alert(
+      'Deseja salvar o treino?',
+      '',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => handleFinalizeTraining() }
+      ]
+    );
+  };
+  
+  const handleBackToHome = () => {
+    Alert.alert(
+      'Realmente deseja sair?',
+      'O progresso será perdido',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => navigation.navigate('TelaHome') }
+      ]
+    );
+  };
+
   const handleFinalizeTraining = () => {
     console.log('Treino Finalizado:');
-    console.log(nomeTreino);
-    saveTreinoTemplate(db, nomeTreino);
+    saveTreinoTemplate(db, nomeTreinoState);
     localExercises.forEach(exercise => {
       console.log('Exercício:', exercise.nome);
       
       if (exercise.series) {
-        const totalSeries = exercise.series.length; 
+        const totalSeries = exercise.series.length;
         
         saveSerieTemplate(db, exercise.idExercicio, totalSeries);
         console.log('Número total de séries:', totalSeries);
@@ -129,36 +155,35 @@ export default function ExerciciosEscolhidosTemplate({ navigation }) {
     <View style={estilos.container}>
       
       {/*header*/}
-      <View style={estilos.doladoHeader}>  
-      
-        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+      <View style={estilos.doladoHeader}>
+        <Pressable onPress={handleBackToHome}>
           <View style={estilos.botaoVoltar}>
-            <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')}/>
+            <Image style={estilos.botaoFechar} source={require('../Styles/imgs/X.png')} />
           </View>
         </Pressable>
         <TextInput
           style={estilos.input}
-          value={nomeTreino} // Vincula o valor do TextInput ao estado
+          value={nomeTreinoState} // Vincula o valor do TextInput ao estado
           onChangeText={handleNomeChange} // Atualiza o estado quando o texto muda
           placeholder="Nome do treino"
           placeholderTextColor='#eeeeee80'
-        />	
-      </View>  
+        />
+      </View>
       {/*header*/}
       <View style={estilos.body}>
-        <FlatList 
+        <FlatList
           data={localExercises}
           renderItem={renderExercise}
           keyExtractor={(item) => item.idExercicio.toString()}
           contentContainerStyle={{ paddingBottom: 70 }}
         />
       </View>
-      <View style={estilos.footer}> 
-        <Pressable style={estilos.finalizeButton} onPress={handleFinalizeTraining}>
+      <View style={estilos.footer}>
+        <Pressable style={estilos.finalizeButton} onPress={handleSaveTraining}>
           <Text style={estilos.bTexto}>Salvar Treino</Text>
         </Pressable>
         
-        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTemplate', { selectedExercises: exercises })}>
+        <Pressable style={estilos.finalizeButton} onPress={() => navigation.navigate('TelaNovoTemplate', { selectedExercises: exercises, nomeTreinoContext })}>
           <Text style={estilos.bTexto}>Mudar Exercícios</Text>
         </Pressable>
       </View>

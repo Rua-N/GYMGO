@@ -1,5 +1,5 @@
 import { Component, useState, useEffect,  useContext} from 'react';
-import { View, Text, TextInput,FlatList ,TouchableOpacity, Image,Pressable } from 'react-native';
+import { Alert, View, Text, TextInput,FlatList ,TouchableOpacity, Image,Pressable } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { estilos } from '../Styles/estilos';
 import { createTables, insertValues, getValues, dropTable } from './database';
@@ -22,6 +22,17 @@ export default function TelaNovoTemplate({ navigation }){
     useEffect(() => {
         loadExercicios();
   }, []);
+
+  const handleBackToHome = () => {
+    Alert.alert(
+      'Realmente deseja sair?',
+      'O progresso será perdido',
+      [
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => navigation.navigate('TelaHome') }
+      ]
+    );
+  };
 
   const toggleSelection = (item) => {
     setSelectedExercicios(prevSelected => {
@@ -95,7 +106,7 @@ const loadExercicios = async () =>{
     <View style={estilos.container}>
         {/*header*/}
       <View style={estilos.header}>  
-        <Pressable onPress={() => navigation.navigate('TelaHome')}>    
+        <Pressable onPress={handleBackToHome}>    
           <View style={estilos.botaoVoltar}>
             <Image style={estilos.setaVoltar} source={require('../Styles/imgs/voltar.png')}/>
           </View>
