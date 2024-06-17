@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, Pressable, ScrollView, TouchableHighlight, Alert } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Image, Pressable, Alert,TouchableHighlight } from 'react-native';
 import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { deleteSeriesTemplate, deleteTreinosTemplate, getTreinosTemplateById, getTreinosTemplate, deleteTreinoTemplateById } from './database1';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useFocusEffect } from '@react-navigation/native';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 
 export default function TelaNovoTreino({ navigation }) {
   const { exercises, setExercises, clearExercises, setNomeTreino } = useContext(ExerciseContext);
   const [treinos, setTreinosTemplate] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  db = useSQLiteContext();
+  const db = useSQLiteContext();
 
   useEffect(() => {
     loadTreinosTemplate();
@@ -24,7 +25,7 @@ export default function TelaNovoTreino({ navigation }) {
   );
 
   const iniciarTreinoTemplate = async (item) => {
-    const result = getTreinosTemplateById(db, item.idTreinoTemplate);
+    const result = await getTreinosTemplateById(db, item.idTreinoTemplate);
     setExercises(result);
     setNomeTreino(item.treinonome);
     navigation.navigate('ExerciciosEscolhidos');
@@ -86,27 +87,41 @@ export default function TelaNovoTreino({ navigation }) {
     );
   };
 
-  const renderItem = ({ item }) => (
-    <View style={estilos.ItemContainer}>
-      <TouchableOpacity onPress={() => iniciarTreinoTemplate(item)} onLongPress={() => handleLongPress(item)}>
-        <Text style={estilos.TextoBold}>Nome: {item.treinonome}</Text>
-        <Text style={estilos.texto}>Exercícios:</Text>
-        <FlatList
-          data={item.exercicios}
-          renderItem={({ item: exercicio }) => (
-            <View style={estilos.doladoExercicio}>
-              <Text style={estilos.texto}>{exercicio.qntSeries} x </Text>
-              <Text style={estilos.texto}>{exercicio.nome}</Text>
-            </View>
-          )}
-          keyExtractor={(exercicio, index) => index.toString()}
-        />
+  const rightSwipeActions = (progress, dragX, item) => {
+    return (
+      <TouchableOpacity style={estilos.BotaoDesilizado} onPress={() => handleLongPress(item)}>
+        <Text style={estilos.txtBig}>
+          Excluir
+        </Text>
       </TouchableOpacity>
-    </View>
+    );
+  };
+
+  const renderItem = ({ item }) => (
+    <Swipeable
+      renderRightActions={(progress, dragX) => rightSwipeActions(progress, dragX, item)}
+    >
+      <View style={estilos.ItemContainer}>
+        <TouchableOpacity onPress={() => iniciarTreinoTemplate(item)} onLongPress={() => handleLongPress(item)}>
+          <Text style={estilos.TextoBold}>Nome: {item.treinonome}</Text>
+          <Text style={estilos.texto}>Exercícios:</Text>
+          <FlatList
+            data={item.exercicios}
+            renderItem={({ item: exercicio }) => (
+              <View style={estilos.doladoExercicio}>
+                <Text style={estilos.texto}>{exercicio.qntSeries} x </Text>
+                <Text style={estilos.texto}>{exercicio.nome}</Text>
+              </View>
+            )}
+            keyExtractor={(exercicio, index) => index.toString()}
+          />
+        </TouchableOpacity>
+      </View>
+    </Swipeable>
   );
 
   return (
-    <View style={estilos.container}>
+    <GestureHandlerRootView style={estilos.container}>
       {/*header*/}
       <View style={estilos.header}>
         <Image style={estilos.logo} source={require('../Styles/imgs/Logo.png')} />
@@ -124,7 +139,7 @@ export default function TelaNovoTreino({ navigation }) {
               <Image source={require('../Styles/imgs/X.png')} style={estilos.botaoAdd} />
             </TouchableOpacity>
           </View>
-          <View estilos={estilos.itens}>
+          <View style={estilos.itens}>
             <FlatList
               data={treinos}
               renderItem={renderItem}
@@ -154,6 +169,6 @@ export default function TelaNovoTreino({ navigation }) {
         </View>
       </View>
       {/*Footer ^^^*/}
-    </View>
+    </GestureHandlerRootView>
   );
 }

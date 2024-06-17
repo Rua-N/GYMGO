@@ -35,11 +35,11 @@ export const estilos = StyleSheet.create({
     bottom:0,
     backgroundColor:'#222831',
     alignSelf:'center',
-    width:'100%',
+    width:'110%',
     justifyContent:'space-evenly',
     gap: 50,
-    //borderColor:'blue',
-    //borderWidth: 2
+    borderTopColor:'#1E242B',
+    borderWidth:1  
   },Frame:{
     width:'50%',
     height:'50%',
@@ -78,6 +78,14 @@ export const estilos = StyleSheet.create({
     marginTop: 15,
     padding: 8,
     width:'90%'
+  },
+  BotaoDesilizado: {
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    padding: 30,
+    marginTop:10
+    
   },
   setaVoltar:{
     width:28,
@@ -215,8 +223,7 @@ export const estilos = StyleSheet.create({
   },
   //
   itens:{
-    borderRadius:20,
-    backgroundColor:'#1E1E1E80',
+    borderRadius:20
   },
   
   listaContainer:{
@@ -262,14 +269,16 @@ export const estilos = StyleSheet.create({
     //borderWidth: 2
   },
   ItemContainer:{
-    backgroundColor: '#0E111580',
+    backgroundColor: '#222831',
     borderRadius:20 ,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'left',
     marginTop:10,
-    marginHorizontal:10,
-    padding:8
+    marginHorizontal:0,
+    padding:8,
+    borderColor:'#eeeeee',
+    borderWidth:1
   },
   selectedItemContainer: {
     backgroundColor: '#0E111580',

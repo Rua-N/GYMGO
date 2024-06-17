@@ -107,7 +107,7 @@ export default function ExerciciosEscolhidos({ navigation }) {
 />
 <TextInput
   style={estilos.seriesInput}
-  placeholder="Repetições"
+  placeholder="Reps"
   placeholderTextColor='#eeeeee80'
   keyboardType='numeric'
   value={series.repetitions}

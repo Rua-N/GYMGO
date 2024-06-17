@@ -4,7 +4,7 @@ import { estilos } from '../Styles/estilos';
 import { ExerciseContext } from './ExerciseContext';
 import { useSQLiteContext } from 'expo-sqlite';
 import { saveTreinoVazio, saveSerie, getSeries, saveTreinoTemplate, saveSerieTemplate, getTreinosTemplate, getLastTreinoTemplate } from './database1';
-import { ScrollView } from 'react-native-gesture-handler';
+
 
 export default function ExerciciosEscolhidosTemplate({ navigation }) {
   const db = useSQLiteContext();
