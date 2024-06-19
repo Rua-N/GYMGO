@@ -41,15 +41,14 @@ npm run android
 - **Frontend**: Ruan Dias
 
   [<img src="https://img.shields.io/badge/Rua--N-white?style=for-the-badge&logo=github&logoSize=auto&labelColor=black&color=black" alt="GitHub" height="20">](https://github.com/Rua-N/)
-  [<img src="https://img.shields.io/badge/Ruan Dias-white?style=for-the-badge&logo=linkedin&logoSize=auto&labelColor=blue&color=blue
-  " alt="LinkedIn" height="20">](https://www.linkedin.com/in/ruan-dias-845041313/)
+  [<img src="https://img.shields.io/badge/Rua--N-white?style=for-the-badge&logo=linkedin&logoSize=auto&labelColor=blue&color=blue" alt="GitHub" height="20">](https://www.linkedin.com/in/ruan-dias-845041313)
+
 
 - **Backend**:  João Victor
+  
+  [<img src="https://img.shields.io/badge/jovicruz-white?style=for-the-badge&logo=github&logoSize=auto&labelColor=black&color=black" alt="GitHub" height="20">](https://github.com/jovicruz)
+ [<img src="https://img.shields.io/badge/João Victor-white?style=for-the-badge&logo=linkedin&logoSize=auto&labelColor=blue&color=blue" alt="GitHub" height="20">](https://www.linkedin.com/in/joviccruz)
 
-  [<img src="https://img.shields.io/badge/jovicruz-white?style=for-the-badge&logo=github&logoSize=auto&labelColor=black&color=black
-  " alt="GitHub" height="20">](https://github.com/jovicruz)
-  [<img src="https://img.shields.io/badge/João Victor-white?style=for-the-badge&logo=linkedin&logoSize=auto&labelColor=blue&color=blue
-  " alt="LinkedIn" height="20">](https://www.linkedin.com/in/joviccruz/)
 
 ## Construído com 🔨
 
