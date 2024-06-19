@@ -3,10 +3,11 @@
 Se trata de um aplicativo mobile que busca facilitar a organização e o acompanhamento das atividades físicas diárias.
 
 ### Vídeo de Demonstração 🎥
-<video width="205" height="445" controls>
-  <source src="assets/demo.mp4" type="video/mp4">
-  Seu navegador não suporta o elemento de vídeo.
-</video>
+
+
+
+https://github.com/jovicruz/GYMGO/assets/115833442/9e66f90d-0272-4825-9538-1068bcae900b
+
 
 
 ## Pré-requisitos 📋
