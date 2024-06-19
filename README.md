@@ -6,7 +6,11 @@ Se trata de um aplicativo mobile que busca facilitar a organização e o acompan
 
 
 
-https://github.com/jovicruz/GYMGO/assets/115833442/9e66f90d-0272-4825-9538-1068bcae900b
+
+https://github.com/jovicruz/GYMGO/assets/115833442/4a6528db-b0db-4624-8869-6d8d5bedb4e6
+
+
+
 
 
 
