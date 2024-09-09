@@ -244,6 +244,13 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
     const idtreino = db.getAllSync<{idTreinoTemplate:number}>('SELECT idTreinoTemplate FROM treinoTemplate ORDER BY idTreinoTemplate DESC LIMIT 1');
     db.runSync('INSERT INTO serieTemplate(idExercicio, idTreinoTemplate, qntSeries) VALUES (?, ?, ?)', idExercicio,  idtreino[0].idTreinoTemplate, qntSeries);
   }
+
+  export const saveExercicio =  (db: SQLiteDatabase,
+    idgrupomuscular: number,
+    nome: string
+  ) => {
+    const result = db.runSync('INSERT INTO exercicio (idgrupomuscular, nome) VALUES (?, ?)' , idgrupomuscular, nome);    
+  };
   
   export const saveSerie = (db: SQLiteDatabase, 
     idExercicio: number, 
@@ -363,6 +370,8 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
 
     return result;
   };
+
+
   export const deleteTreinosTemplate = async (db: SQLiteDatabase) => {
     await db.runAsync(`
     DELETE FROM TreinoTemplate;
@@ -380,6 +389,12 @@ join exercicio on exercicio.idexercicio = serie.idexercicio
       `, id);
     console.log('treinos apagado id: ' + id);
 
+  };
+
+  
+  export const deleteExercicio = (db: SQLiteDatabase,
+    idexercicio: number) => {
+    db.runAsync('DELETE FROM exercicio WHERE idexercicio = ?;', idexercicio);
   };
 
   export const deleteTreinos = async (db: SQLiteDatabase) => {
